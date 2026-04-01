@@ -1,0 +1,19 @@
+.DS_Store
+
+# Quarto rendered output and cache
+.quarto/
+_site/
+reports/*_files/
+
+# Rendered documents
+*.html
+*.pdf
+
+# R session and project artifacts
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Logs
+*.log

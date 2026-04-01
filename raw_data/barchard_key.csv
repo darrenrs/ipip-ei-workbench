@@ -1,0 +1,69 @@
+id,name,component,component_id,key
+h24,Express my affection physically.,Positive Expressivity,positive_expressivity,+
+a5,Laugh out loud if something is funny.,Positive Expressivity,positive_expressivity,+
+a7,Express my happiness in a childlike manner.,Positive Expressivity,positive_expressivity,+
+a48,Sometimes laugh out loud when reading or watching TV.,Positive Expressivity,positive_expressivity,+
+a79,Hug my close friends.,Positive Expressivity,positive_expressivity,+
+a139,Show my feelings when I'm happy.,Positive Expressivity,positive_expressivity,+
+a4,Find it difficult showing people that I care about them.,Positive Expressivity,positive_expressivity,-
+a132,Have difficulty showing affection.,Positive Expressivity,positive_expressivity,-
+a84,Keep my happy feelings to myself.,Positive Expressivity,positive_expressivity,-
+a3,Shout or scream when I'm angry.,Negative Expressivity,negative_expressivity,+
+a14,Can't help but look upset when something bad happens.,Negative Expressivity,negative_expressivity,+
+a54,Show my fear.,Negative Expressivity,negative_expressivity,+
+a80,Suspect that my facial expressions give me away when I feel sad.,Negative Expressivity,negative_expressivity,+
+a101,Show my sadness.,Negative Expressivity,negative_expressivity,+
+a10,"Keep my feelings to myself, regardless of how unhappy I am.",Negative Expressivity,negative_expressivity,-
+a12,Find it difficult showing people that I'm angry with them.,Negative Expressivity,negative_expressivity,-
+a130,"Keep my feelings to myself, regardless of how scared I am.",Negative Expressivity,negative_expressivity,-
+a66,Rarely show my anger.,Negative Expressivity,negative_expressivity,-
+a28,Wish I could more easily show my negative feelings.,Negative Expressivity,negative_expressivity,-
+a33,Think about the causes of my emotions.,Attending to Emotions,attending_to_emotions,+
+a116,Pay a lot of attention to my feelings.,Attending to Emotions,attending_to_emotions,+
+a122,Am usually aware of the way that I'm feeling.,Attending to Emotions,attending_to_emotions,+
+a134,Notice my emotions.,Attending to Emotions,attending_to_emotions,+
+a142,Often stop to analyze how I'm feeling.,Attending to Emotions,attending_to_emotions,+
+a87,Rarely think about how I feel.,Attending to Emotions,attending_to_emotions,-
+a106,Rarely analyze my emotions.,Attending to Emotions,attending_to_emotions,-
+e9,Am not in touch with my feelings.,Attending to Emotions,attending_to_emotions,-
+x183,Often ignore my feelings.,Attending to Emotions,attending_to_emotions,-
+x10,Rarely notice my emotional reactions.,Attending to Emotions,attending_to_emotions,-
+a15,Listen to my feelings when making important decisions.,Emotion-Based Decision-Making,emotion_based_decision_making,+
+a26,"Base my goals in life on inspiration, rather than logic.",Emotion-Based Decision-Making,emotion_based_decision_making,+
+a69,Plan my life based on how I feel.,Emotion-Based Decision-Making,emotion_based_decision_making,+
+a124,Believe that emotions give direction to life.,Emotion-Based Decision-Making,emotion_based_decision_making,+
+x199,Listen to my heart rather than my brain.,Emotion-Based Decision-Making,emotion_based_decision_making,+
+a97,Plan my life logically.,Emotion-Based Decision-Making,emotion_based_decision_making,-
+a6,Believe that important decisions should be based on logical reasoning.,Emotion-Based Decision-Making,emotion_based_decision_making,-
+h378,Listen to my brain rather than my heart.,Emotion-Based Decision-Making,emotion_based_decision_making,-
+a113,"Make decisions based on facts, not feelings.",Emotion-Based Decision-Making,emotion_based_decision_making,-
+a1,Like to watch children open presents.,Responsive Joy,responsive_joy,+
+a16,Usually end up laughing if the people around me are laughing.,Responsive Joy,responsive_joy,+
+a63,Feel other people's joy.,Responsive Joy,responsive_joy,+
+a71,Get caught up in the excitement when others are celebrating.,Responsive Joy,responsive_joy,+
+a72,Am strongly influenced by the good moods of others.,Responsive Joy,responsive_joy,+
+a76,Find it hard to stay in a bad mood if the people around me are happy.,Responsive Joy,responsive_joy,+
+a2,Dislike being around happy people when I'm feeling sad.,Responsive Joy,responsive_joy,-
+a11,Am unaffected by other people's happiness.,Responsive Joy,responsive_joy,-
+a13,Rarely get caught up in the excitement.,Responsive Joy,responsive_joy,-
+a42,Dislike children's birthday parties.,Responsive Joy,responsive_joy,-
+x253,Am deeply moved by others' misfortunes.,Responsive Distress,responsive_distress,+
+h992,Am easily moved to tears.,Responsive Distress,responsive_distress,+
+h988,Suffer from others' sorrows.,Responsive Distress,responsive_distress,+
+a135,Am upset by the misfortunes of strangers.,Responsive Distress,responsive_distress,+
+a46,Would be upset if I saw an injured animal.,Responsive Distress,responsive_distress,+
+e64,Am calm even in tense situations.,Responsive Distress,responsive_distress,-
+h1046,Am not easily disturbed by events.,Responsive Distress,responsive_distress,-
+a67,Am unaffected by the suffering of others.,Responsive Distress,responsive_distress,-
+a56,Rarely cry during sad movies.,Responsive Distress,responsive_distress,-
+a128,Remain calm during emergencies.,Responsive Distress,responsive_distress,-
+h1100,Am concerned about others.,Empathic Concern,empathic_concern,+
+e115,Feel sympathy for those who are worse off than myself.,Empathic Concern,empathic_concern,+
+x259,Sympathize with the homeless.,Empathic Concern,empathic_concern,+
+x219,Believe that criminals should receive help rather than punishment.,Empathic Concern,empathic_concern,+
+a24,Believe that the poor deserve our sympathy.,Empathic Concern,empathic_concern,+
+x244,Feel little concern for others.,Empathic Concern,empathic_concern,-
+e169,Have no sympathy for criminals.,Empathic Concern,empathic_concern,-
+h435,Look down on any weakness.,Empathic Concern,empathic_concern,-
+x103,Don't like to get involved in other people's problems.,Empathic Concern,empathic_concern,-
+a51,Have little sympathy for the unemployed.,Empathic Concern,empathic_concern,-

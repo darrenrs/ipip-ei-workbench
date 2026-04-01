@@ -1,0 +1,11 @@
+---
+title: Barchard Emotional Scale
+author: Darren R. Skidmore
+date: 29 March 2026
+---
+
+# Introduction
+
+Introduction text here
+
+# Load in CSV files
