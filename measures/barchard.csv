@@ -1,4 +1,4 @@
-id,name,component,component_id,key
+id,name,scale,scale_id,key
 h24,Express my affection physically.,Positive Expressivity,positive_expressivity,+
 a5,Laugh out loud if something is funny.,Positive Expressivity,positive_expressivity,+
 a7,Express my happiness in a childlike manner.,Positive Expressivity,positive_expressivity,+

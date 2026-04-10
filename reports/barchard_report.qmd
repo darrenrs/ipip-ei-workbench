@@ -22,7 +22,7 @@ Emotional intelligence (EI) is an aspect of intelligence which concerns the abil
 
 In her doctoral thesis, Kimberly Barchard of the University of British Columbia proposed one such model of emotional intelligence including 14 constructs. Barchard identified half of these subcomponents as personality dimensions, meaning they can be measured by self-assessment rather than being cognitive abilities measured by performance [@barchard2001]. For this reason, it was proposed that there is no support in considering the aggregate of the seven personality subcomponents as emotional intelligence and the seven dimensions are best interpreted independently of each other.
 
-Items from the International Personality Item Pool (IPIP) administered to the Eugene-Springfield Community Sample were used to derive summaries such as a full reliability analysis, factor analysis, and sample-based scoring tables for the seven Barchard subcomponents. The findings show that the subcomponents are moderately to highly reliable, with sufficient sample sizes and confidence intervals to derive component scoring tables with respect to this sample. A factor analysis demonstrated modest support for the theoretical subcomponents, with sufficient factor loadings but also a high prevalence of cross-loading. There was no support for a global composite.
+Items from the International Personality Item Pool (IPIP) administered to the Eugene-Springfield Community Sample were used to derive summaries such as a full reliability analysis, factor analysis, and sample-based scoring tables for the seven Barchard subcomponents. The findings show that the subcomponents are moderately to highly reliable, with sufficient sample sizes and confidence intervals to derive scale scoring tables with respect to this sample. A factor analysis demonstrated modest support for the theoretical subcomponents, with sufficient factor loadings but also a high prevalence of cross-loading. There was no support for a global composite.
 
 # Method
 
@@ -41,7 +41,7 @@ Only participants with at least gender and age information available and who com
 #| results: asis
 
 demographics_df <- read_csv(
-  "../output/barchard_demographics.csv",
+  "../output/barchard/barchard_demographics.csv",
   show_col_types = FALSE
 )
 
@@ -170,7 +170,7 @@ The seven subcomponents of emotional intelligence which were identified by Barch
 
 The sixty-eight test items were derived from the full set of IPIP questionnaires, including 49 items from the Personality, Emotions, and Attitudes (PEA) inventory, 4 items from the 179-IPIP inventory, 7 items from the 858-IPIP inventory, and 8 items from the 275-IPIP inventory [@ori_technical_report].
 
-Positive Expressivity and Emotion-Based Decision-Making had nine items each, while the other subcomponents had ten items each. Some items, such as "Express my affection physically" were positively related to the component, and other items, such as "Keep my feelings to myself, regardless of how unhappy I am" were negatively related to the component and were negative keyed. Negatively keyed items were scored by applying the function `6 - n` to its raw score (e.g., an answer of "4" would become "2".)
+Positive Expressivity and Emotion-Based Decision-Making had nine items each, while the other subcomponents had ten items each. Some items, such as "Express my affection physically" were positively related to the scale, and other items, such as "Keep my feelings to myself, regardless of how unhappy I am" were negatively related to the scale and were negative keyed. Negatively keyed items were scored by applying the function `6 - n` to its raw score (e.g., an answer of "4" would become "2".)
 
 After items were appropriately keyed, the raw totals for the subscales were computed.
 
@@ -182,7 +182,7 @@ After items were appropriately keyed, the raw totals for the subscales were comp
 #| message: false
 
 scale_descriptives <- read_csv(
-  "../output/barchard_scale_descriptives.csv",
+  "../output/barchard/barchard_scale_descriptives.csv",
   show_col_types = FALSE
 )
 
@@ -199,7 +199,7 @@ Most scales had low-to-moderate positive correlations to each other (range 0.13-
 #| message: false
 
 scale_correlations <- read_csv(
-  "../output/barchard_scale_correlations.csv",
+  "../output/barchard/barchard_scale_correlations.csv",
   show_col_types = FALSE
 )
 
@@ -216,7 +216,7 @@ The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\ome
 #| message: false
 
 scale_reliabilities <- read_csv(
-  "../output/barchard_scale_reliabilities.csv",
+  "../output/barchard/barchard_scale_reliabilities.csv",
   show_col_types = FALSE
 )
 
@@ -231,10 +231,13 @@ Factor analysis--an essential aspect of psychometrics--is a process used to dete
 
 ```{r}
 #| echo: false
-barchard_df <- read_csv("../output/barchard_scored.csv", show_col_types = FALSE)
+barchard_df <- read_csv(
+  "../output/barchard/barchard_scored.csv",
+  show_col_types = FALSE
+)
 barchard_df$id <- as.character(barchard_df$id)
 
-barchard_key <- read_csv("../raw_data/barchard_key.csv")
+barchard_key <- read_csv("../measures/barchard.csv")
 fa_items <- barchard_key$id
 barchard_df_fa <- barchard_df[, fa_items]
 ```
@@ -265,7 +268,7 @@ Though parallel analysis suggests that the number of factors = 11, the factor ei
 ### Principal Axis Factoring
 Principal Axis Factoring (PAF), which is a type of exploratory common factor analysis, is the preferred method for factor analysis [@kim2008].
 
-Out of sixty-eight questions, sixty-four (94%) had at least one loading ≥ 0.30 and twenty-seven (40%) were cross-loaded, meaning they had a loading ≥ 0.30 on two or more components. Forty-nine (72%) questions had their highest loading match their dominant theoretical component.
+Out of sixty-eight questions, sixty-four (94%) had at least one loading ≥ 0.30 and twenty-seven (40%) were cross-loaded, meaning they had a loading ≥ 0.30 on two or more components. Forty-nine (72%) questions had their highest loading match their dominant theoretical scale.
 
 ```{r}
 #| echo: false
@@ -275,12 +278,12 @@ Out of sixty-eight questions, sixty-four (94%) had at least one loading ≥ 0.30
 #| fig-height: 18
 
 structure_df <- read_csv(
-  "../output/barchard_fa_structure_7.csv",
+  "../output/barchard/barchard_fa_structure.csv",
   show_col_types = FALSE
 )
 
 assignment_df <- read_csv(
-  "../output/barchard_fa_structure_assignments_7.csv",
+  "../output/barchard/barchard_fa_structure_assignments.csv",
   show_col_types = FALSE
 )
 
@@ -381,7 +384,7 @@ ggplot(heatmap_df, aes(x = factor, y = item_label, fill = loading)) +
   )
 ```
 
-Each factor in the factor analysis was named after its most common (dominant) component group with respect to the theoretical model. None of the new factors were exactly the same as their theoretical components. The components Attending to Emotions, Emotion-Based Decision-Making, and Empathic Concern each had 9/10 of their original items, but the other components only retained about half of their original items, with the remainder going to precisely one other component. These relations are shown in the form `theoretical_component -> observed_component` where all `theoretical_component` items with a different highest loading instead had their highest loading with `observed_component`. 
+Each factor in the factor analysis was named after its most common (dominant) scale group with respect to the theoretical model. None of the new factors were exactly the same as their theoretical components. The components Attending to Emotions, Emotion-Based Decision-Making, and Empathic Concern each had 9/10 of their original items, but the other components only retained about half of their original items, with the remainder going to precisely one other scale. These relations are shown in the form `theoretical_component -> observed_component` where all `theoretical_component` items with a different highest loading instead had their highest loading with `observed_component`. 
 
 - Positive Expressivity -> Responsive Joy
 - Negative Expressivity -> Responsive Distress
@@ -394,21 +397,21 @@ Each factor in the factor analysis was named after its most common (dominant) co
 #| message: false
 
 pfa_component_align <- read_csv(
-  "../output/barchard_fa_structure_factor_component_alignment_7.csv",
+  "../output/barchard/barchard_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
 )
 
 knitr::kable(pfa_component_align, digits = 2)
 ```
 
-Finally, the intercorrelations between the seven observed factors were computed. Because component intercorrelations are weak-to-none, there is no support for a global composite score.
+Finally, the intercorrelations between the seven observed factors were computed. Because scale intercorrelations are weak-to-none, there is no support for a global composite score.
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
 
 pfa_component_phi <- read_csv(
-  "../output/barchard_fa_phi_7.csv",
+  "../output/barchard/barchard_fa_phi.csv",
   show_col_types = FALSE
 )
 
@@ -417,9 +420,9 @@ knitr::kable(pfa_component_phi, digits = 2)
 
 # Conclusion
 
-The seven personality subcomponents were supported as practical scored domains by acceptable internal consistency and low-to-moderate inter-scale correlations, although factor analysis showed only partial support for the intended item-to-component structure. The seven-factor model was retained as the most interpretable and theory-aligned structure; although exploratory factor analysis also suggested more complex 8- to 11-factor solutions which were not considered due to the manifestation of very small composites with only 1 to 3 items.
+The seven personality subcomponents were supported as practical scored domains by acceptable internal consistency and low-to-moderate inter-scale correlations, although factor analysis showed only partial support for the intended item-to-scale structure. The seven-factor model was retained as the most interpretable and theory-aligned structure; although exploratory factor analysis also suggested more complex 8- to 11-factor solutions which were not considered due to the manifestation of very small composites with only 1 to 3 items.
 
-Support for the intended component mapping was only partial as the items in the factor analysis did not perfectly align with their theoretical subcomponents. The vast majority of the items had at least one strong loading, but a significant minority of the items cross-loaded or had two or more strong loadings on components. Some pairs of components, such as Positive Expressivity and Responsive Joy, were similar enough that some test items could fit into either.
+Support for the intended scale mapping was only partial as the items in the factor analysis did not perfectly align with their theoretical subcomponents. The vast majority of the items had at least one strong loading, but a significant minority of the items cross-loaded or had two or more strong loadings on components. Some pairs of components, such as Positive Expressivity and Responsive Joy, were similar enough that some test items could fit into either.
 
 The factor-analyzed composite and original composite intercorrelations showed no support for a global composite. This is likely related to the fact that this study used self-assessment data from only half of Barchard's emotional intelligence components, with the other components being impractical to measure with self-assessment techniques.
 
@@ -433,38 +436,38 @@ The sixty-eight (68) items are listed below.
 #| message: false
 
 appendix_key <- read_csv(
-  "../raw_data/barchard_key.csv",
+  "../measures/barchard.csv",
   show_col_types = FALSE
 )
 
 appendix_assignments <- read_csv(
-  "../output/barchard_fa_structure_assignments_7.csv",
+  "../output/barchard/barchard_fa_structure_assignments.csv",
   show_col_types = FALSE
 )
 
 appendix_alignment <- read_csv(
-  "../output/barchard_fa_structure_factor_component_alignment_7.csv",
+  "../output/barchard/barchard_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
 )
 
-component_lookup <- unique(appendix_key[, c("component_id", "component")])
+scale_lookup <- unique(appendix_key[, c("scale_id", "scale")])
 
-factor_component_lookup <- merge(
-  appendix_alignment[, c("factor", "dominant_component_id")],
-  component_lookup,
-  by.x = "dominant_component_id",
-  by.y = "component_id",
+factor_scale_lookup <- merge(
+  appendix_alignment[, c("factor", "dominant_scale_id")],
+  scale_lookup,
+  by.x = "dominant_scale_id",
+  by.y = "scale_id",
   all.x = TRUE,
   sort = FALSE
 )
 
 factor_labels <- setNames(
-  factor_component_lookup$component,
-  factor_component_lookup$factor
+  factor_scale_lookup$scale,
+  factor_scale_lookup$factor
 )
 
 appendix_table <- merge(
-  appendix_key[, c("id", "name", "component", "key")],
+  appendix_key[, c("id", "name", "scale", "key")],
   appendix_assignments[, c(
     "id",
     "primary_factor",
@@ -527,7 +530,7 @@ Any raw score which results in a Z-score more extreme than 3 SD in either direct
 #| results: asis
 
 scoring_tables <- read_csv(
-  "../output/barchard_scale_scoring_tables.csv",
+  "../output/barchard/barchard_scale_scoring_tables.csv",
   col_types = cols(
     scale = col_character(),
     raw_score = col_double(),
@@ -539,25 +542,25 @@ scoring_tables <- read_csv(
 )
 
 score_descriptives <- read_csv(
-  "../output/barchard_scale_descriptives.csv",
+  "../output/barchard/barchard_scale_descriptives.csv",
   show_col_types = FALSE
 )
 
-score_component_lookup <- unique(
-  appendix_key[, c("component_id", "component")]
+score_scale_lookup <- unique(
+  appendix_key[, c("scale_id", "scale")]
 )
 
-scoring_tables$component <- score_component_lookup$component[
-  match(scoring_tables$scale, score_component_lookup$component_id)
+scoring_tables$scale <- score_scale_lookup$scale[
+  match(scoring_tables$scale, score_scale_lookup$scale_id)
 ]
 
-for (comp in score_component_lookup$component) {
-  comp_id <- score_component_lookup$component_id[
-    score_component_lookup$component == comp
+for (scale in score_scale_lookup$scale) {
+  scale_id <- score_scale_lookup$scale_id[
+    score_scale_lookup$scale == scale
   ]
 
-  comp_table <- scoring_tables[
-    scoring_tables$component == comp,
+  scale_table <- scoring_tables[
+    scoring_tables$scale == scale,
     c(
       "raw_score",
       "standard_score",
@@ -567,11 +570,11 @@ for (comp in score_component_lookup$component) {
     )
   ]
 
-  comp_desc <- score_descriptives[
-    score_descriptives$scale == comp_id,
+  scale_desc <- score_descriptives[
+    score_descriptives$scale == scale_id,
   ]
 
-  colnames(comp_table) <- c(
+  colnames(scale_table) <- c(
     "Raw Score",
     "Standard Score",
     "Percentile Rank",
@@ -579,11 +582,11 @@ for (comp in score_component_lookup$component) {
     "Qualitative Descriptor"
   )
 
-  max_visible_raw <- max(comp_table$`Raw Score`)
-  min_visible_raw <- min(comp_table$`Raw Score`)
+  max_visible_raw <- max(scale_table$`Raw Score`)
+  min_visible_raw <- min(scale_table$`Raw Score`)
   top_hidden_min <- max_visible_raw + 1
-  top_hidden_max <- comp_desc$theoretical_max
-  bottom_hidden_min <- comp_desc$theoretical_min
+  top_hidden_max <- scale_desc$theoretical_max
+  bottom_hidden_min <- scale_desc$theoretical_min
   bottom_hidden_max <- min_visible_raw - 1
 
   format_raw_range <- function(min_raw, max_raw) {
@@ -627,11 +630,11 @@ for (comp in score_component_lookup$component) {
     NULL
   }
 
-  comp_table[] <- lapply(comp_table, as.character)
-  comp_table <- rbind(top_row, comp_table, bottom_row)
+  scale_table[] <- lapply(scale_table, as.character)
+  scale_table <- rbind(top_row, scale_table, bottom_row)
 
-  cat(paste0("### ", comp, "\n"))
-  print(knitr::kable(comp_table, align = c("r", "r", "r", "c", "l")))
+  cat(paste0("### ", scale, "\n"))
+  print(knitr::kable(scale_table, align = c("r", "r", "r", "c", "l")))
   cat("\n\n")
 }
 ```

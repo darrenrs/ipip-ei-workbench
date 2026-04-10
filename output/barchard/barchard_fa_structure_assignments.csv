@@ -1,4 +1,4 @@
-id,name,component,component_id,primary_factor,primary_loading,primary_loading_abs,secondary_factor,secondary_loading,secondary_loading_abs,loading_gap_abs,weak_primary,cross_loading
+id,name,scale,scale_id,primary_factor,primary_loading,primary_loading_abs,secondary_factor,secondary_loading,secondary_loading_abs,loading_gap_abs,weak_primary,cross_loading
 h24,Express my affection physically.,Positive Expressivity,positive_expressivity,PA1,0.5353167565475513,0.5353167565475513,PA7,0.3413852292449385,0.3413852292449385,0.19393152730261276,FALSE,TRUE
 a5,Laugh out loud if something is funny.,Positive Expressivity,positive_expressivity,PA7,0.4904273059334439,0.4904273059334439,PA1,0.27228011362116644,0.27228011362116644,0.21814719231227747,FALSE,FALSE
 a7,Express my happiness in a childlike manner.,Positive Expressivity,positive_expressivity,PA7,0.4229947733184038,0.4229947733184038,PA3,0.29448489868387767,0.29448489868387767,0.12850987463452612,FALSE,FALSE
