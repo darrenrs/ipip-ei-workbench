@@ -21,12 +21,6 @@ barchard_df[reverse_items] <- 6 - barchard_df[reverse_items]
 # Group by components and get sums
 components <- unique(barchard_key$component_id)
 
-# Exploratory total across all Barchard items
-barchard_df[["total_score_exploratory"]] <- rowSums(
-  barchard_df[, barchard_key$id],
-  na.rm = TRUE
-)
-
 for (comp in components) {
   vars <- barchard_key$id[barchard_key$component_id == comp]
   barchard_df[[comp]] <- rowSums(

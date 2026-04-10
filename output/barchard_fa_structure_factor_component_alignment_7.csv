@@ -1,0 +1,8 @@
+factor,dominant_component_id,dominant_item_count,total_items_assigned,dominant_share,positive_expressivity,negative_expressivity,attending_to_emotions,emotion_based_decision_making,responsive_joy,responsive_distress,empathic_concern
+PA1,positive_expressivity,5,7,0.7142857142857143,5,0,1,0,0,0,1
+PA2,empathic_concern,9,15,0.6,0,0,0,0,1,5,9
+PA3,attending_to_emotions,9,12,0.75,0,0,9,3,0,0,0
+PA4,emotion_based_decision_making,6,6,1,0,0,0,6,0,0,0
+PA5,responsive_distress,5,9,0.5555555555555556,0,4,0,0,0,5,0
+PA6,negative_expressivity,6,6,1,0,6,0,0,0,0,0
+PA7,responsive_joy,9,13,0.6923076923076923,4,0,0,0,9,0,0
