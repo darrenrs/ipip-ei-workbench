@@ -1,5 +1,8 @@
 .DS_Store
 
+# Output
+output/
+
 # Quarto rendered output and cache
 .quarto/
 _site/
