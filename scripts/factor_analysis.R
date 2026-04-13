@@ -1,15 +1,21 @@
 library(readr)
 library(psych)
 
-# Hardcoded measure ID
-measure_id <- "barchard"
+# Get arg for measure id and nfactors
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) != 2) {
+  stop("Usage: Rscript scripts/factor_analysis.R <measure_id> <nfactors>")
+}
+measure_id <- args[1]
+nfactors <- args[2]
 output_dir <- file.path("output", measure_id)
 
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Load and analyze scored data
 key_df <- read_csv(file.path("measures", paste0(measure_id, ".csv")))
-scales <- unique(key_df$scale_id)
+scale_ids <- unique(key_df$scale_id)
+scale_ids <- scale_ids[!is.na(scale_ids)]
 
 scored_df <- read_csv(file.path(
   "output",
@@ -32,50 +38,26 @@ KMO(scored_df_fa)
 set.seed(1)
 fa.parallel(scored_df_fa)
 
-# Factor analysis via Principal Axis Factoring
-par(xpd = TRUE)
-
-# 11 factor model: excessive number of factors with only two or three questions
-barchard_fa_pfa_ELEVEN <- fa(
+# Factor analysis via Principal Axis Factoring using nfactors
+factor_analysis_pfa <- fa(
   scored_df_fa,
-  nfactors = 11,
+  nfactors = nfactors,
   fm = "pa",
   max.iter = 100,
   rotate = "oblimin"
 )
-fa.diagram(barchard_fa_pfa_ELEVEN, cex = 1, marg = c(1, 2, 1, 1))
-
-# 8 factor model: nearly identical to 7 factor candidate but with one question having its own factor
-barchard_fa_pfa_EIGHT <- fa(
-  scored_df_fa,
-  nfactors = 8,
-  fm = "pa",
-  max.iter = 100,
-  rotate = "oblimin"
-)
-fa.diagram(barchard_fa_pfa_EIGHT, cex = 1, marg = c(1, 2, 1, 1))
-
-# 7 factor model: most interpretable theory-aligned candidate
-barchard_fa_pfa <- fa(
-  scored_df_fa,
-  nfactors = 7,
-  fm = "pa",
-  max.iter = 100,
-  rotate = "oblimin"
-)
-fa.diagram(barchard_fa_pfa, cex = 1, marg = c(1, 2, 1, 1))
 
 # What questions correlate to each factor?
-print(barchard_fa_pfa$Structure, digits = 3)
+print(factor_analysis_pfa$Structure, digits = 3)
 
 # How do the factors correlate to each other? is there evidence of a higher-order factor?
-print(barchard_fa_pfa$Phi, digits = 3)
+print(factor_analysis_pfa$Phi, digits = 3)
 
-# Export the 7-factor structure matrix and factor intercorrelations
-structure_matrix <- as.data.frame(unclass(barchard_fa_pfa$Structure))
+# Export the nfactor structure matrix
+structure_matrix <- as.data.frame(unclass(factor_analysis_pfa$Structure))
 structure_matrix$item_id <- rownames(structure_matrix)
 structure_matrix <- structure_matrix[,
-  c("item_id", colnames(barchard_fa_pfa$Structure))
+  c("item_id", colnames(factor_analysis_pfa$Structure))
 ]
 
 structure_table <- merge(
@@ -88,23 +70,25 @@ structure_table <- merge(
 
 write_csv(
   structure_table,
-  file.path(output_dir, "barchard_fa_structure.csv")
+  file.path(output_dir, paste0(measure_id, "_fa_structure.csv"))
 )
 
-phi_table <- as.data.frame(unclass(barchard_fa_pfa$Phi))
+# Export the factor intercorrelations
+phi_table <- as.data.frame(unclass(factor_analysis_pfa$Phi))
 phi_table$factor <- rownames(phi_table)
 phi_table <- phi_table[,
-  c("factor", colnames(barchard_fa_pfa$Phi))
+  c("factor", colnames(factor_analysis_pfa$Phi))
 ]
 
 write_csv(
   phi_table,
-  file.path(output_dir, "barchard_fa_phi.csv")
+  file.path(output_dir, paste0(measure_id, "_fa_phi.csv"))
 )
 
 # Exploratory item-to-factor assignment from the structure matrix.
 # This uses the largest absolute structure loading as the primary empirical factor.
-structure_values <- as.matrix(unclass(barchard_fa_pfa$Structure))
+# Also lists the secondary empirical factor and bools if highest load is <0.30 or two or more loads are >=0.30
+structure_values <- as.matrix(unclass(factor_analysis_pfa$Structure))
 assignment_list <- list()
 
 for (item_id in rownames(structure_values)) {
@@ -140,10 +124,10 @@ item_factor_assignments <- merge(
 
 write_csv(
   item_factor_assignments,
-  file.path(output_dir, "barchard_fa_structure_assignments.csv")
+  file.path(output_dir, paste0(measure_id, "_fa_structure_assignments.csv"))
 )
 
-# Summarize how each empirical factor aligns with the original theoretical scales
+# List each empirical factor and how they align with the original theoretical scale_ids
 factor_scale_counts <- as.data.frame.matrix(
   table(
     item_factor_assignments$primary_factor,
@@ -153,24 +137,24 @@ factor_scale_counts <- as.data.frame.matrix(
 
 factor_scale_counts$factor <- rownames(factor_scale_counts)
 factor_scale_counts <- factor_scale_counts[,
-  c("factor", scales)
+  c("factor", scale_ids)
 ]
 
 dominant_scale <- apply(
-  factor_scale_counts[, scales],
+  factor_scale_counts[, scale_ids],
   1,
   function(row) {
-    scales[which.max(row)]
+    scale_ids[which.max(row)]
   }
 )
 
 dominant_count <- apply(
-  factor_scale_counts[, scales],
+  factor_scale_counts[, scale_ids],
   1,
   max
 )
 
-total_items_assigned <- rowSums(factor_scale_counts[, scales])
+total_items_assigned <- rowSums(factor_scale_counts[, scale_ids])
 
 factor_scale_alignment_df <- data.frame(
   factor = factor_scale_counts$factor,
@@ -197,5 +181,8 @@ factor_scale_alignment_df <- merge(
 
 write_csv(
   factor_scale_alignment_df,
-  file.path(output_dir, "barchard_fa_structure_factor_alignment.csv")
+  file.path(
+    output_dir,
+    paste0(measure_id, "_fa_structure_factor_alignment.csv")
+  )
 )

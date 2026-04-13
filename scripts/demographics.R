@@ -3,7 +3,7 @@ library(readr)
 # Get arg for measure id
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 0) {
-  stop("Usage: Rscript scripts/run_demographics.R <measure_id>")
+  stop("Usage: Rscript scripts/demographics.R <measure_id>")
 }
 measure_id <- args[1]
 output_dir <- file.path("output", measure_id)

@@ -1,0 +1,51 @@
+id,name,scale,scale_id,key
+h34,Am the life of the party.,Extroversion,extraversion,+
+x112,Feel comfortable around people.,Extroversion,extraversion,+
+h16,Start conversations.,Extroversion,extraversion,+
+x83,Talk to a lot of different people at parties.,Extroversion,extraversion,+
+x78,Don't mind being the center of attention.,Extroversion,extraversion,+
+x56,Don't talk a lot.,Extroversion,extraversion,-
+h154,Keep in the background.,Extroversion,extraversion,-
+h1039,Have little to say.,Extroversion,extraversion,-
+x68,Don't like to draw attention to myself.,Extroversion,extraversion,-
+h661,Am quiet around strangers.,Extroversion,extraversion,-
+h21,Am interested in people.,Agreeableness,agreeableness,+
+h1130,Sympathize with others' feelings.,Agreeableness,agreeableness,+
+x177,Have a soft heart.,Agreeableness,agreeableness,+
+h160,Take time out for others.,Agreeableness,agreeableness,+
+e136,Feel others' emotions.,Agreeableness,agreeableness,+
+h107,Make people feel at ease.,Agreeableness,agreeableness,+
+x165,Am not really interested in others.,Agreeableness,agreeableness,-
+h1103,Insult people.,Agreeableness,agreeableness,-
+x227,Am not interested in other people's problems.,Agreeableness,agreeableness,-
+x244,Feel little concern for others.,Agreeableness,agreeableness,-
+x87,Am always prepared.,Conscientiousness,conscientiousness,+
+h1362,Pay attention to details.,Conscientiousness,conscientiousness,+
+e119,Get chores done right away.,Conscientiousness,conscientiousness,+
+x118,Like order.,Conscientiousness,conscientiousness,+
+x179,Follow a schedule.,Conscientiousness,conscientiousness,+
+x163,Am exacting in my work.,Conscientiousness,conscientiousness,+
+h823,Leave my belongings around.,Conscientiousness,conscientiousness,-
+h1467,Make a mess of things.,Conscientiousness,conscientiousness,-
+x82,Often forget to put things back in their proper place.,Conscientiousness,conscientiousness,-
+h1140,Shirk my duties.,Conscientiousness,conscientiousness,-
+e141,Am relaxed most of the time.,Neuroticism,neuroticism,-
+x156,Seldom feel blue.,Neuroticism,neuroticism,-
+x107,Get stressed out easily.,Neuroticism,neuroticism,+
+h1157,Worry about things.,Neuroticism,neuroticism,+
+h927,Am easily disturbed.,Neuroticism,neuroticism,+
+x95,Get upset easily.,Neuroticism,neuroticism,+
+h926,Change my mood a lot.,Neuroticism,neuroticism,+
+e92,Have frequent mood swings.,Neuroticism,neuroticism,+
+h761,Get irritated easily.,Neuroticism,neuroticism,+
+x74,Often feel blue.,Neuroticism,neuroticism,+
+h1276,Have a rich vocabulary.,Openness to Experience,openness,+
+x14,Have a vivid imagination.,Openness to Experience,openness,+
+h1313,Have excellent ideas.,Openness to Experience,openness,+
+x100,Am quick to understand things.,Openness to Experience,openness,+
+h1272,Use difficult words.,Openness to Experience,openness,+
+x114,Spend time reflecting on things.,Openness to Experience,openness,+
+h53,Am full of ideas.,Openness to Experience,openness,+
+x176,Have difficulty understanding abstract ideas.,Openness to Experience,openness,-
+x228,Am not interested in abstract ideas.,Openness to Experience,openness,-
+x272,Do not have a good imagination.,Openness to Experience,openness,-

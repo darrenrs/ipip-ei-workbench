@@ -6,7 +6,7 @@ output/
 # Quarto rendered output and cache
 .quarto/
 _site/
-reports/*_files/
+reports/**/*_files/
 
 # Rendered documents
 *.html

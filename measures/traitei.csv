@@ -1,0 +1,76 @@
+id,name,scale,scale_id,subscale,subscale_id,key
+h1130,Sympathize with others' feelings.,Emotionality,emotionality,Empathy,empathy,+
+q256,Am sensitive to the needs of others.,Emotionality,emotionality,Empathy,empathy,+
+h159,Respect others' feelings.,Emotionality,emotionality,Empathy,empathy,+
+v269,Try to respond with understanding when someone treats me badly.,Emotionality,emotionality,Empathy,empathy,+
+x244,Feel little concern for others.,Emotionality,emotionality,Empathy,empathy,-
+a122,Am usually aware of the way that I'm feeling.,Emotionality,emotionality,Emotion Perception,emotion_perception,+
+a134,Notice my emotions.,Emotionality,emotionality,Emotion Perception,emotion_perception,+
+p351,Can read people like a book.,Emotionality,emotionality,Emotion Perception,emotion_perception,+
+a102,Have feelings that I can't quite identify.,Emotionality,emotionality,Emotion Perception,emotion_perception,-
+m66,Find it hard to know what people are really feeling.,Emotionality,emotionality,Emotion Perception,emotion_perception,-
+h17,Express myself easily.,Emotionality,emotionality,Emotion Expression,emotion_expression,+
+x148,Am open about my feelings.,Emotionality,emotionality,Emotion Expression,emotion_expression,+
+h3,Show my feelings.,Emotionality,emotionality,Emotion Expression,emotion_expression,+
+a28,Wish I could more easily show my negative feelings.,Emotionality,emotionality,Emotion Expression,emotion_expression,-
+x97,Have difficulty expressing my feelings.,Emotionality,emotionality,Emotion Expression,emotion_expression,-
+d21,Value having long-term close relationships with people.,Emotionality,emotionality,Relationships,relationships,+
+e76,Keep in touch with old friends.,Emotionality,emotionality,Relationships,relationships,+
+v92,Am an extremely loyal person.,Emotionality,emotionality,Relationships,relationships,+
+v293,Feel empty in my relationships.,Emotionality,emotionality,Relationships,relationships,-
+d42,Feel that having close friends is not especially important to me.,Emotionality,emotionality,Relationships,relationships,-
+h381,Keep my emotions under control.,Self-Control,self_control,Emotion Regulation,emotion_regulation,+
+v137,Can control my emotions.,Self-Control,self_control,Emotion Regulation,emotion_regulation,+
+e146,Am swayed by my emotions.,Self-Control,self_control,Emotion Regulation,emotion_regulation,-
+x95,Get upset easily.,Self-Control,self_control,Emotion Regulation,emotion_regulation,-
+h755,Lose my temper.,Self-Control,self_control,Emotion Regulation,emotion_regulation,-
+v100,Think before I speak.,Self-Control,self_control,Impulsiveness,impulsiveness,+
+x274,Easily resist temptations.,Self-Control,self_control,Impulsiveness,impulsiveness,+
+q253,Act impulsively when something is bothering me.,Self-Control,self_control,Impulsiveness,impulsiveness,-
+v329,Give in to my urges.,Self-Control,self_control,Impulsiveness,impulsiveness,-
+h846,Act without thinking.,Self-Control,self_control,Impulsiveness,impulsiveness,-
+h362,Can stand a great deal of stress.,Self-Control,self_control,Stress Management,stress_management,+
+h391,Can work under pressure.,Self-Control,self_control,Stress Management,stress_management,+
+e64,Am calm even in tense situations.,Self-Control,self_control,Stress Management,stress_management,+
+x107,Get stressed out easily.,Self-Control,self_control,Stress Management,stress_management,-
+h959,Become overwhelmed by events.,Self-Control,self_control,Stress Management,stress_management,-
+e1,Automatically take charge.,Sociability,sociability,Assertiveness,assertiveness,+
+h1197,Am able to stand up for myself.,Sociability,sociability,Assertiveness,assertiveness,+
+v82,Don't hesitate to express an unpopular opinion.,Sociability,sociability,Assertiveness,assertiveness,+
+h986,Am unable to speak up for myself.,Sociability,sociability,Assertiveness,assertiveness,-
+h1035,Can't say no.,Sociability,sociability,Assertiveness,assertiveness,-
+h173,Know how to comfort others.,Sociability,sociability,Emotion Management,emotion_management,+
+h168,Have a calming influence.,Sociability,sociability,Emotion Management,emotion_management,+
+v295,Know what to say to make people feel good.,Sociability,sociability,Emotion Management,emotion_management,+
+h107,Make people feel at ease.,Sociability,sociability,Emotion Management,emotion_management,+
+a105,Enjoy manipulating other people's feelings.,Sociability,sociability,Emotion Management,emotion_management,-
+h1366,Am skilled in handling social situations.,Sociability,sociability,Social Awareness,social_awareness,+
+v80,Am able to fit into any situation.,Sociability,sociability,Social Awareness,social_awareness,+
+m11,Am good at reading people's intentions from their faces.,Sociability,sociability,Social Awareness,social_awareness,+
+v43,Don't know how to handle myself in a new social situation.,Sociability,sociability,Social Awareness,social_awareness,-
+m50,Tend to find social situations confusing.,Sociability,sociability,Social Awareness,social_awareness,-
+x129,Feel comfortable with myself.,Well-Being,well_being,Self-Esteem,self_esteem,+
+h2043,Think highly of myself.,Well-Being,well_being,Self-Esteem,self_esteem,+
+h646,Have a low opinion of myself.,Well-Being,well_being,Self-Esteem,self_esteem,-
+x252,Judge myself more harshly than others do.,Well-Being,well_being,Self-Esteem,self_esteem,-
+v281,Am not confident that my way of doing things will work out for the best.,Well-Being,well_being,Self-Esteem,self_esteem,-
+v185,Am happy with my life.,Well-Being,well_being,Happiness,happiness,+
+n14,Felt happy.,Well-Being,well_being,Happiness,happiness,+
+h32,Radiate joy.,Well-Being,well_being,Happiness,happiness,+
+d14,Find that it doesn't take much to make me feel happy.,Well-Being,well_being,Happiness,happiness,+
+d26,Rarely feel happy in response to minor events.,Well-Being,well_being,Happiness,happiness,-
+v28,Look on the bright side.,Well-Being,well_being,Optimism,optimism,+
+v106,Remain hopeful despite challenges.,Well-Being,well_being,Optimism,optimism,+
+n10,Felt hopeful about the future.,Well-Being,well_being,Optimism,optimism,+
+h49,Am able to see the best in a situation.,Well-Being,well_being,Optimism,optimism,+
+v36,Expect the worst.,Well-Being,well_being,Optimism,optimism,-
+h2000,Adapt easily to new situations.,,,Adaptability,adaptability,+
+h1282,Can change course if necessary.,,,Adaptability,adaptability,+
+x62,Am open to change.,,,Adaptability,adaptability,+
+h1063,Dislike changes.,,,Adaptability,adaptability,-
+m45,Become anxious in new situations.,,,Adaptability,adaptability,-
+v108,Am a goal-oriented person.,,,Self-Motivation,self_motivation,+
+q204,Push myself very hard to succeed.,,,Self-Motivation,self_motivation,+
+a100,Find that I am able to pursue one goal for a long time.,,,Self-Motivation,self_motivation,+
+h556,Never give up.,,,Self-Motivation,self_motivation,+
+x110,Am not highly motivated to succeed.,,,Self-Motivation,self_motivation,-
