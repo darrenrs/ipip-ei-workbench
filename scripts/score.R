@@ -25,7 +25,6 @@ scored_df <- responses_df |>
 # Reverse score negated items
 reverse_items <- key_df$id[key_df$key == "-"]
 
-scored_df <- scored_df
 scored_df[reverse_items] <- 6 - scored_df[reverse_items]
 
 # Group by scales and get sums

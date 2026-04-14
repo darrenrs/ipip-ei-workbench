@@ -71,27 +71,27 @@ format_percentile <- function(p) {
 }
 
 scale_descriptor <- function(ss) {
-  if (ss >= 130) {
+  if (ss >= 70) {
     return("Extremely High")
   }
 
-  if (ss >= 120) {
+  if (ss >= 63) {
     return("Very High")
   }
 
-  if (ss >= 110) {
+  if (ss >= 57) {
     return("High Average")
   }
 
-  if (ss >= 90) {
+  if (ss >= 43) {
     return("Average")
   }
 
-  if (ss >= 80) {
+  if (ss >= 37) {
     return("Low Average")
   }
 
-  if (ss >= 70) {
+  if (ss >= 30) {
     return("Very Low")
   }
 
@@ -235,14 +235,14 @@ for (i in seq_len(nrow(score_lookup_df))) {
       score_reliabilities_df$score_id == score_id,
     ]
 
-    standard_score_exact <- 100 +
-      15 * ((raw_scores - descriptives_row$mean) / descriptives_row$sd)
+    standard_score_exact <- 50 +
+      10 * ((raw_scores - descriptives_row$mean) / descriptives_row$sd)
     standard_score <- round(standard_score_exact)
-    sem_ss <- 15 * sqrt(1 - reliability_row$omega_total)
+    sem_ss <- 10 * sqrt(1 - reliability_row$omega_total)
     ci_lower <- round(standard_score - z_90 * sem_ss)
     ci_upper <- round(standard_score + z_90 * sem_ss)
     percentile_rank <- vapply(
-      pnorm(standard_score_exact, mean = 100, sd = 15),
+      pnorm(standard_score_exact, mean = 50, sd = 10),
       format_percentile,
       character(1)
     )
@@ -264,8 +264,8 @@ for (i in seq_len(nrow(score_lookup_df))) {
     )
 
     score_reference_df <- score_reference_df[
-      score_reference_df$standard_score >= 55 &
-        score_reference_df$standard_score <= 145,
+      score_reference_df$standard_score >= 20 &
+        score_reference_df$standard_score <= 80,
     ]
 
     score_reference_df <- score_reference_df[

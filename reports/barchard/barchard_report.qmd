@@ -1,7 +1,7 @@
 ---
 title: Analysis of Barchard's Self-Assessed Components of Emotional Intelligence
 author: Darren R. Skidmore
-date: 2026-04-10
+date: 2026-04-13
 bibliography: barchard_report.bib
 ---
 
@@ -41,7 +41,7 @@ Only participants with at least gender and age information available and who com
 #| results: asis
 
 demographics_df <- read_csv(
-  "../output/barchard/barchard_demographics.csv",
+  "../../output/barchard/barchard_demographics.csv",
   show_col_types = FALSE
 )
 
@@ -182,7 +182,7 @@ After items were appropriately keyed, the raw totals for the subscales were comp
 #| message: false
 
 scale_descriptives <- read_csv(
-  "../output/barchard/barchard_scale_descriptives.csv",
+  "../../output/barchard/barchard_score_descriptives.csv",
   show_col_types = FALSE
 )
 
@@ -199,7 +199,7 @@ Most scales had low-to-moderate positive correlations to each other (range 0.13-
 #| message: false
 
 scale_correlations <- read_csv(
-  "../output/barchard/barchard_scale_correlations.csv",
+  "../../output/barchard/barchard_score_correlations.csv",
   show_col_types = FALSE
 )
 
@@ -216,7 +216,7 @@ The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\ome
 #| message: false
 
 scale_reliabilities <- read_csv(
-  "../output/barchard/barchard_scale_reliabilities.csv",
+  "../../output/barchard/barchard_score_reliabilities.csv",
   show_col_types = FALSE
 )
 
@@ -232,12 +232,12 @@ Factor analysis--an essential aspect of psychometrics--is a process used to dete
 ```{r}
 #| echo: false
 barchard_df <- read_csv(
-  "../output/barchard/barchard_scored.csv",
+  "../../output/barchard/barchard_scored.csv",
   show_col_types = FALSE
 )
 barchard_df$id <- as.character(barchard_df$id)
 
-barchard_key <- read_csv("../measures/barchard.csv")
+barchard_key <- read_csv("../../measures/barchard.csv")
 fa_items <- barchard_key$id
 barchard_df_fa <- barchard_df[, fa_items]
 ```
@@ -278,12 +278,12 @@ Out of sixty-eight questions, sixty-four (94%) had at least one loading ≥ 0.30
 #| fig-height: 18
 
 structure_df <- read_csv(
-  "../output/barchard/barchard_fa_structure.csv",
+  "../../output/barchard/barchard_fa_structure.csv",
   show_col_types = FALSE
 )
 
 assignment_df <- read_csv(
-  "../output/barchard/barchard_fa_structure_assignments.csv",
+  "../../output/barchard/barchard_fa_structure_assignments.csv",
   show_col_types = FALSE
 )
 
@@ -315,13 +315,13 @@ assignment_df$item_label <- ifelse(
 )
 
 primary_tiles <- assignment_df[
-  assignment_df$primary_loading_abs >= 0.30,
+  assignment_df$primary_loading >= 0.30,
   c("item_label", "primary_factor")
 ]
 colnames(primary_tiles) <- c("item_label", "factor")
 
 secondary_tiles <- assignment_df[
-  assignment_df$secondary_loading_abs >= 0.30,
+  assignment_df$secondary_loading >= 0.30,
   c("item_label", "secondary_factor")
 ]
 colnames(secondary_tiles) <- c("item_label", "factor")
@@ -397,7 +397,7 @@ Each factor in the factor analysis was named after its most common (dominant) sc
 #| message: false
 
 pfa_component_align <- read_csv(
-  "../output/barchard/barchard_fa_structure_factor_alignment.csv",
+  "../../output/barchard/barchard_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
 )
 
@@ -411,7 +411,7 @@ Finally, the intercorrelations between the seven observed factors were computed.
 #| message: false
 
 pfa_component_phi <- read_csv(
-  "../output/barchard/barchard_fa_phi.csv",
+  "../../output/barchard/barchard_fa_phi.csv",
   show_col_types = FALSE
 )
 
@@ -436,17 +436,17 @@ The sixty-eight (68) items are listed below.
 #| message: false
 
 appendix_key <- read_csv(
-  "../measures/barchard.csv",
+  "../../measures/barchard.csv",
   show_col_types = FALSE
 )
 
 appendix_assignments <- read_csv(
-  "../output/barchard/barchard_fa_structure_assignments.csv",
+  "../../output/barchard/barchard_fa_structure_assignments.csv",
   show_col_types = FALSE
 )
 
 appendix_alignment <- read_csv(
-  "../output/barchard/barchard_fa_structure_factor_alignment.csv",
+  "../../output/barchard/barchard_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
 )
 
@@ -521,7 +521,7 @@ knitr::kable(
 
 # Appendix B - Scoring Tables
 
-Any raw score which results in a Z-score more extreme than 3 SD in either direction should be interpreted as standard score "<55" or ">145".
+T-Scores have a mean of 50 and standard deviation of 10. Any raw score which results in a Z-score more extreme than 3 SD in either direction should be interpreted as T-Score "<20" or ">80".
 
 ```{r}
 #| echo: false
@@ -530,9 +530,11 @@ Any raw score which results in a Z-score more extreme than 3 SD in either direct
 #| results: asis
 
 scoring_tables <- read_csv(
-  "../output/barchard/barchard_scale_scoring_tables.csv",
+  "../../output/barchard/barchard_score_reference_tables.csv",
   col_types = cols(
-    scale = col_character(),
+    score_level = col_character(),
+    score = col_character(),
+    score_id = col_character(),
     raw_score = col_double(),
     standard_score = col_double(),
     percentile_rank = col_character(),
@@ -542,7 +544,7 @@ scoring_tables <- read_csv(
 )
 
 score_descriptives <- read_csv(
-  "../output/barchard/barchard_scale_descriptives.csv",
+  "../../output/barchard/barchard_score_descriptives.csv",
   show_col_types = FALSE
 )
 
@@ -550,17 +552,13 @@ score_scale_lookup <- unique(
   appendix_key[, c("scale_id", "scale")]
 )
 
-scoring_tables$scale <- score_scale_lookup$scale[
-  match(scoring_tables$scale, score_scale_lookup$scale_id)
-]
-
 for (scale in score_scale_lookup$scale) {
   scale_id <- score_scale_lookup$scale_id[
     score_scale_lookup$scale == scale
   ]
 
   scale_table <- scoring_tables[
-    scoring_tables$scale == scale,
+    scoring_tables$score_id == scale_id,
     c(
       "raw_score",
       "standard_score",
@@ -571,12 +569,12 @@ for (scale in score_scale_lookup$scale) {
   ]
 
   scale_desc <- score_descriptives[
-    score_descriptives$scale == scale_id,
+    score_descriptives$score_id == scale_id,
   ]
 
   colnames(scale_table) <- c(
     "Raw Score",
-    "Standard Score",
+    "T-Score",
     "Percentile Rank",
     "90% CI",
     "Qualitative Descriptor"
@@ -604,7 +602,7 @@ for (scale in score_scale_lookup$scale) {
   top_row <- if (!is.na(top_hidden_min) && top_hidden_min <= top_hidden_max) {
     data.frame(
       "Raw Score" = format_raw_range(top_hidden_min, top_hidden_max),
-      "Standard Score" = ">145",
+      "T-Score" = ">80",
       "Percentile Rank" = ">99.9",
       "90% CI" = "-",
       "Qualitative Descriptor" = "Extremely High",
@@ -620,7 +618,7 @@ for (scale in score_scale_lookup$scale) {
   ) {
     data.frame(
       "Raw Score" = format_raw_range(bottom_hidden_min, bottom_hidden_max),
-      "Standard Score" = "<55",
+      "T-Score" = "<20",
       "Percentile Rank" = "<0.1",
       "90% CI" = "-",
       "Qualitative Descriptor" = "Extremely Low",
