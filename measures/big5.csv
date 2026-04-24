@@ -1,14 +1,14 @@
 id,name,scale,scale_id,key
-h34,Am the life of the party.,Extroversion,extraversion,+
-x112,Feel comfortable around people.,Extroversion,extraversion,+
-h16,Start conversations.,Extroversion,extraversion,+
-x83,Talk to a lot of different people at parties.,Extroversion,extraversion,+
-x78,Don't mind being the center of attention.,Extroversion,extraversion,+
-x56,Don't talk a lot.,Extroversion,extraversion,-
-h154,Keep in the background.,Extroversion,extraversion,-
-h1039,Have little to say.,Extroversion,extraversion,-
-x68,Don't like to draw attention to myself.,Extroversion,extraversion,-
-h661,Am quiet around strangers.,Extroversion,extraversion,-
+h34,Am the life of the party.,Extraversion,extraversion,+
+x112,Feel comfortable around people.,Extraversion,extraversion,+
+h16,Start conversations.,Extraversion,extraversion,+
+x83,Talk to a lot of different people at parties.,Extraversion,extraversion,+
+x78,Don't mind being the center of attention.,Extraversion,extraversion,+
+x56,Don't talk a lot.,Extraversion,extraversion,-
+h154,Keep in the background.,Extraversion,extraversion,-
+h1039,Have little to say.,Extraversion,extraversion,-
+x68,Don't like to draw attention to myself.,Extraversion,extraversion,-
+h661,Am quiet around strangers.,Extraversion,extraversion,-
 h21,Am interested in people.,Agreeableness,agreeableness,+
 h1130,Sympathize with others' feelings.,Agreeableness,agreeableness,+
 x177,Have a soft heart.,Agreeableness,agreeableness,+

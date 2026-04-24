@@ -1,16 +1,23 @@
 library(readr)
 library(psych)
 
+# NOTE: This is an alternate script for factor analysis of summed-total subscales to scales.
+# Please refer to factor_analysis.R for the main factor analysis.
+
 # Get arg for measure id and nfactors
-measure_id <- 'traitei'
-nfactors <- 15
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) != 2) {
+  stop("Usage: Rscript scripts/factor_analysis.R <measure_id> <nfactors>")
+}
+measure_id <- args[1]
+nfactors <- args[2]
 output_dir <- file.path("output", measure_id)
 
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Load and analyze scored data
 key_df <- read_csv(file.path("measures", paste0(measure_id, ".csv")))
-scale_ids <- unique(key_df$subscale_id)
+scale_ids <- unique(key_df$scale_id)
 scale_ids <- scale_ids[!is.na(scale_ids)]
 
 scored_df <- read_csv(file.path(
@@ -20,8 +27,14 @@ scored_df <- read_csv(file.path(
 ))
 scored_df$id <- as.character(scored_df$id)
 
-# Factor Analysis
-fa_items <- key_df$id
+# Factor Analysis using Facets
+facet_key_df <- unique(
+  key_df[
+    !is.na(key_df$subscale_id) & !is.na(key_df$scale_id),
+    c("subscale", "subscale_id", "scale", "scale_id")
+  ]
+)
+fa_items <- facet_key_df$subscale_id
 scored_df_fa <- scored_df[, fa_items]
 
 # Verify that the data are not an identity matrix and therefore suitable for Factor Analysis
@@ -43,7 +56,7 @@ factor_analysis_pfa <- fa(
   rotate = "oblimin"
 )
 
-# What questions correlate to each factor?
+# What items correlate to each factor?
 print(factor_analysis_pfa$Structure, digits = 3)
 
 # How do the factors correlate to each other? is there evidence of a higher-order factor?
@@ -57,16 +70,19 @@ structure_matrix <- structure_matrix[,
 ]
 
 structure_table <- merge(
-  key_df[, c("id", "subscale_id")],
+  facet_key_df[, c("subscale_id", "scale_id")],
   structure_matrix,
-  by.x = "id",
+  by.x = "subscale_id",
   by.y = "item_id",
   sort = FALSE
 )
 
 write_csv(
   structure_table,
-  file.path(output_dir, paste0(measure_id, "_facet_fa_structure.csv"))
+  file.path(
+    output_dir,
+    paste0(measure_id, "_subscale_to_scale_fa_structure.csv")
+  )
 )
 
 # Export the factor intercorrelations
@@ -78,7 +94,7 @@ phi_table <- phi_table[,
 
 write_csv(
   phi_table,
-  file.path(output_dir, paste0(measure_id, "_facet_fa_phi.csv"))
+  file.path(output_dir, paste0(measure_id, "_subscale_to_scale_fa_phi.csv"))
 )
 
 # Exploratory item-to-factor assignment from the structure matrix.
@@ -110,9 +126,10 @@ for (item_id in rownames(structure_values)) {
 
 item_factor_assignments <- do.call(rbind, assignment_list)
 item_factor_assignments <- merge(
-  key_df[, c("id", "name", "subscale", "subscale_id")],
+  facet_key_df[, c("subscale_id", "subscale", "scale", "scale_id")],
   item_factor_assignments,
-  by = "id",
+  by.x = "subscale_id",
+  by.y = "id",
   sort = FALSE
 )
 
@@ -120,7 +137,7 @@ write_csv(
   item_factor_assignments,
   file.path(
     output_dir,
-    paste0(measure_id, "_facet_fa_structure_assignments.csv")
+    paste0(measure_id, "_subscale_to_scale_fa_structure_assignments.csv")
   )
 )
 
@@ -128,7 +145,7 @@ write_csv(
 factor_scale_counts <- as.data.frame.matrix(
   table(
     item_factor_assignments$primary_factor,
-    item_factor_assignments$subscale_id
+    item_factor_assignments$scale_id
   )
 )
 
@@ -154,7 +171,7 @@ dominant_count <- apply(
 total_items_assigned <- rowSums(factor_scale_counts[, scale_ids])
 
 # for each factor get the percentage of items that stayed in that construct
-scale_item_totals <- table(key_df$subscale_id)
+scale_item_totals <- table(facet_key_df$scale_id)
 
 factor_scale_alignment_df <- data.frame(
   factor = factor_scale_counts$factor,
@@ -177,6 +194,6 @@ write_csv(
   factor_scale_alignment_df,
   file.path(
     output_dir,
-    paste0(measure_id, "_facet_fa_structure_factor_alignment.csv")
+    paste0(measure_id, "_subscale_to_scale_fa_structure_factor_alignment.csv")
   )
 )

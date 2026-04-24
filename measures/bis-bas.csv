@@ -1,0 +1,37 @@
+id,name,scale,scale_id,key
+p420,Worry about what people think of me.,BIS (Anxiety),anxiety,+
+d96,Am always worried about something.,BIS (Anxiety),anxiety,+
+d71,Often worry about things that turn out to be unimportant.,BIS (Anxiety),anxiety,+
+h905,Am afraid that I will do the wrong thing.,BIS (Anxiety),anxiety,+
+h987,Am easily hurt.,BIS (Anxiety),anxiety,+
+q50,Begin to panic when there is danger.,BIS (Anxiety),anxiety,+
+h959,Become overwhelmed by events.,BIS (Anxiety),anxiety,+
+x107,Get stressed out easily.,BIS (Anxiety),anxiety,+
+d79,Rarely worry.,BIS (Anxiety),anxiety,-
+x242,Am not embarrassed easily.,BIS (Anxiety),anxiety,-
+d58,Like to behave spontaneously.,BAS (Fun-Seeking),fun_seeking,+
+r58,Have persuaded others to do something really adventurous or crazy.,BAS (Fun-Seeking),fun_seeking,+
+x3,Am willing to try anything once.,BAS (Fun-Seeking),fun_seeking,+
+e122,Like to act on a whim.,BAS (Fun-Seeking),fun_seeking,+
+r5,Prefer friends who are excitingly unpredictable.,BAS (Fun-Seeking),fun_seeking,+
+h870,Do crazy things.,BAS (Fun-Seeking),fun_seeking,+
+e35,Enjoy being reckless.,BAS (Fun-Seeking),fun_seeking,+
+x250,Would never go hang-gliding or bungee-jumping.,BAS (Fun-Seeking),fun_seeking,-
+d75,Rarely enjoy behaving in a silly manner.,BAS (Fun-Seeking),fun_seeking,-
+h317,Avoid dangerous situations.,BAS (Fun-Seeking),fun_seeking,-
+h793,Want to be in charge.,BAS (Drive),drive,+
+h1193,Try to surpass others' accomplishments.,BAS (Drive),drive,+
+p474,Like to show off my body.,BAS (Drive),drive,+
+h1327,Know how to get around the rules.,BAS (Drive),drive,+
+p445,Have a strong need for power.,BAS (Drive),drive,+
+h334,Take charge.,BAS (Drive),drive,+
+q204,Push myself very hard to succeed.,BAS (Drive),drive,+
+x110,Am not highly motivated to succeed.,BAS (Drive),drive,-
+p462,Am not an extraordinary person.,BAS (Drive),drive,-
+p434,Hate being the center of attention.,BAS (Drive),drive,-
+r33,Feel excited or happy for no apparent reason.,BAS (Reward-Responsiveness),reward_response,+
+a71,Get caught up in the excitement when others are celebrating.,BAS (Reward-Responsiveness),reward_response,+
+q117,Am eager to soothe hurt feelings.,BAS (Reward-Responsiveness),reward_response,+
+r43,Get so happy or energetic that I am almost giddy.,BAS (Reward-Responsiveness),reward_response,+
+a13,Rarely get caught up in the excitement.,BAS (Reward-Responsiveness),reward_response,-
+h572,Don't get excited about things.,BAS (Reward-Responsiveness),reward_response,-

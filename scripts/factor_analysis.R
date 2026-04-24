@@ -1,6 +1,9 @@
 library(readr)
 library(psych)
 
+# NOTE: This is for factor analysis of items to scales.
+# For items to subscales or subscale to scales, please refer to the other factor analysis scripts.
+
 # Get arg for measure id and nfactors
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) != 2) {
@@ -25,7 +28,7 @@ scored_df <- read_csv(file.path(
 scored_df$id <- as.character(scored_df$id)
 
 # Factor Analysis
-fa_items <- key_df$id
+fa_items <- key_df$id[!is.na(key_df$scale_id)]
 scored_df_fa <- scored_df[, fa_items]
 
 # Verify that the data are not an identity matrix and therefore suitable for Factor Analysis
@@ -47,7 +50,7 @@ factor_analysis_pfa <- fa(
   rotate = "oblimin"
 )
 
-# What questions correlate to each factor?
+# What items correlate to each factor?
 print(factor_analysis_pfa$Structure, digits = 3)
 
 # How do the factors correlate to each other? is there evidence of a higher-order factor?

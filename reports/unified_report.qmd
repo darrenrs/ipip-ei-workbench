@@ -1,0 +1,1481 @@
+---
+title: Psychometric Evaluation of Selected IPIP-Based Personality and Emotional Intelligence Measures
+author: Darren R. Skidmore
+date: 2026-04-23
+bibliography: unified_report.bib
+---
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+# Load libraries
+library(readr)
+library(psych)
+library(ggplot2)
+```
+
+# Abstract
+
+There are many online tools claiming to assess personality and emotional intelligence, but it is important to evaluate the evidence behind their claims before users interpret their results. Using public domain items from the International Personality Item Pool, five measures concerning various theories of personality and emotional intelligence were evaluated using reliability and exploratory factor analysis. Responses from the Eugene-Springfield Community Sample were used to construct the sample needed for the analyses. The results show strong psychometric support for Big Five and BIS/BAS, moderate support for Barchard's seven personality subcomponents of emotional intelligence, and limited support for VIA-IS and Trait EI. The findings support Big Five and BIS/BAS most strongly for user-facing interpretation, support Barchard for cautious interpretation, and suggest that VIA-IS and Trait EI should be treated as limited or exploratory.
+
+# Introduction
+
+Personality psychology is the study of the variation of personality among people. It has many theoretical and practical applications, especially relating to psychometric analyses of how people, situations, and behaviors connect to each other, and using these analyses to drive the development of theory and social policy [@funder_personality].
+
+Most personality inventories, especially those broadly addressing the personality spectrum, are proprietary, used for commercial purposes, and not available for general research [@ipip_rationale]. This makes it very challenging for researchers to study broad personality traits at a psychometric level. The International Personality Item Pool (IPIP), which is a public domain collection of 3,320 items from various personality inventories, was designed to address this problem [@ipip_summary].
+
+This report evaluates five measures based on IPIP items using a common psychometric pipeline, including scoring, reliability analysis, inter-scale correlations, and exploratory factor analysis, in order to determine which instruments are most defensible for interpretation and public-facing use.
+
+# Method
+
+## Sample
+
+The Eugene-Springfield Community Sample was a longitudinal study conducted by the Oregon Research Institute which involved recruited adult participants in the Eugene, Oregon area completing self-administered personality assessments based on the IPIP items between 1993 and 2007. The raw data are available on the Harvard Dataverse website and consists of 1,142 total cases, 1,134 cases with demographic information, and 960 cases who completed at least one survey [@ori_technical_report; @ori_data].
+
+The sample for each measurement varied as each sample was composed of participants if and only if they completed every item on the measurement. The demographics for each measurement sample are very similar to the full Eugene-Springfield Community Sample. The full sample had a mean age of 49.7 (SD 13.1) with a range of 18-89. 53% of participants were female and 47% were male. 96% of participants were white. Participants had a high level of education with 52% having a college degree and 98% having at least a high school degree or vocational/technical training.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: asis
+
+demographics_df <- read_tsv(file.path(
+  "..",
+  "raw_data",
+  "IPIP2539_demographics.tab"
+))
+
+gender_n <- sum(demographics_df$SEX %in% c("F", "M"), na.rm = TRUE)
+
+fmt_pct <- function(x, total) {
+  sprintf("%.1f%%", 100 * x / total)
+}
+
+count_row <- function(level, count, total) {
+  data.frame(
+    Value = level,
+    Summary = as.character(count),
+    Percentage = fmt_pct(count, total)
+  )
+}
+
+education_map <- c(
+  "1" = "Less than high school",
+  "2" = "Less than high school",
+  "3" = "High school or vocational training",
+  "4" = "High school or vocational training",
+  "5" = "Some college",
+  "6" = "College graduate",
+  "7" = "Some post-college education",
+  "8" = "Post-college degree"
+)
+education_levels <- unique(unname(education_map))
+
+education_factor <- factor(
+  education_map[as.character(demographics_df$EDUC)],
+  levels = education_levels
+)
+
+ethnicity_factor <- factor(
+  ifelse(demographics_df$ETHNIC == "5", "White", "Other"),
+  levels = c("White", "Other")
+)
+
+education_n <- sum(!is.na(education_factor))
+ethnicity_n <- sum(!is.na(ethnicity_factor))
+
+age_table <- data.frame(
+  Statistic = c("Mean (SD)", "Range"),
+  Summary = c(
+    sprintf(
+      "%.1f (%.1f)",
+      mean(demographics_df$AGE, na.rm = TRUE),
+      sd(demographics_df$AGE, na.rm = TRUE)
+    ),
+    sprintf(
+      "%d-%d",
+      min(demographics_df$AGE, na.rm = TRUE),
+      max(demographics_df$AGE, na.rm = TRUE)
+    )
+  )
+)
+
+gender_table <- rbind(
+  count_row("Female", sum(demographics_df$SEX == "F", na.rm = TRUE), gender_n),
+  count_row("Male", sum(demographics_df$SEX == "M", na.rm = TRUE), gender_n)
+)
+
+education_table <- do.call(
+  rbind,
+  lapply(
+    education_levels,
+    function(level) {
+      count_row(
+        level,
+        sum(education_factor == level, na.rm = TRUE),
+        education_n
+      )
+    }
+  )
+)
+
+ethnicity_table <- rbind(
+  count_row(
+    "White",
+    sum(ethnicity_factor == "White", na.rm = TRUE),
+    ethnicity_n
+  ),
+  count_row(
+    "Other",
+    sum(ethnicity_factor == "Other", na.rm = TRUE),
+    ethnicity_n
+  )
+)
+
+cat("### Age\n")
+knitr::kable(age_table, align = c("l", "l", "l"))
+
+cat("\n### Gender\n")
+knitr::kable(gender_table, align = c("l", "l", "l"))
+
+cat("\n### Ethnicity\n")
+knitr::kable(ethnicity_table, align = c("l", "l", "l"))
+
+cat("\n### Education\n")
+knitr::kable(education_table, align = c("l", "l", "l"))
+```
+
+## Scoring
+
+All items in the IPIP were scored on a Likert scale from 1-5, where 1 is "very inaccurate", 2 is "moderately inaccurate", 3 is "neither accurate nor inaccurate", 4 is "moderately accurate", and 5 is "very accurate".
+
+Items in each of the measures could be either positively or negatively related to its trait. For example, someone responding in the affirmative to "Am the life of the party" would be more likely described as an extravert, while someone responding in the affirmative to "Don't like to draw attention to myself" would be less likely described as an extravert. Items negatively related to their trait were "negatively keyed" and were scored by applying the function `6 - n` to its raw score (e.g., an answer of "4" would become "2".)
+
+Each item was assigned to exactly one lowest-level scoring unit (subscale, then scale). In hierarchical instruments, some items also contributed to a higher-order scale. For Trait EI, two isolated facets were scored as facets but excluded from factor-level analyses requiring a higher-order assignment.
+
+The sum of all scales and (if applicable) subscales were then computed, which allowed the development of scoring tables with respect to the derived sample. Z-scores were transformed to T-scores (mean=50, stdev=10), a typical practice in personality assessments, along with percentile ranks, qualitative descriptors, and margins of error from later reliability measures. For all subscales, no T-scores were reported in lieu of summarized qualitative descriptors, and percentile ranks were based on the sample absolute rank instead of being based on sample mean and standard deviation. Scoring rows of $|\sigma| > 3.0$ were clipped to that threshold.
+
+Scoring tables are not included in this report and can be found on this project's official website: https://darrenskidmore.com/projects/ipip-workbench.
+
+## Reliability Analysis
+
+Reliability analysis, which verifies the consistency of a measure when subject to random error, is an essential aspect of psychometrics. Cronbach's alpha ($\alpha$) and McDonald's omega ($\omega$) were computed to determine the reliability of all scales and subscales. In all cases, these figures were nearly identical. Mean inter-item correlations were also computed.
+
+## Factor Analysis
+
+Factor analysis is a process used to determine the number of latent (underlying) factors in a sample and which variables compose each of the factors. It is an essential aspect of personality psychology because its results can evaluate whether the observed structure is consistent with the claimed item-factor relationships.
+
+Some preliminary steps used in factor analysis are Bartlett's Test of Sphericity, which assesses whether the item correlation matrix differs from an identity matrix, and the Kaiser-Meyer-Olkin (KMO) Test, which evaluates sampling adequacy for factor analysis.
+
+Parallel analysis uses two related methods, principal component analysis (PCA) and principal axis factoring (PAF), to examine at what point the observed eigenvalues decrease below the threshold expected by random data. Because PAF is the preferred method for factor analysis [@kim_cfa], candidate solutions were examined using principal axis factoring. In some cases, the number of suggested factors and components differed across the two methods, in which case factor models corresponding to both candidate dimensionalities were investigated.
+
+Two new metrics were used to aid in the process of theoretical-to-empirical component analysis:
+
+- dominant-share purity: the proportion of items assigned to an empirical factor that came from its most common theoretical construct
+- dominant-share alignment: the proportion of items from a theoretical construct that were recovered in its best-matching empirical factor
+
+In some cases, the Phi matrix, which contains the correlations among the latent factors after oblique rotation, was used to determine if a global composite score was justified.
+
+# Measures
+
+Five frameworks of personality and emotional intelligence were used in this study. Each test was subject to the same common pipeline, entirely composed of IPIP items, albeit with some specific nuances. All scales used the corresponding IPIP scoring key page for item selection unless otherwise indicated. Please see Appendix C for a list of these pages.
+
+## Big Five
+
+The Big Five personality domains are a set of five factors that describe aspects of human personality. These heterogeneous factors, known as openness to experience, conscientiousness, extraversion, agreeableness, and neuroticism, are reported on a continuous scale. Combined, they account for the majority of the variance in human personality.
+
+The Big Five implementation in this study was based on Goldberg’s Big Five factor markers [@ipip_measure_big5]. 10 items for each factor were used for a total of 50.
+
+## Behavioral Inhibition/Activation Systems (BIS/BAS)
+
+The BIS/BAS is a theory of personality denoted by separation of one's interactions with the environment into the behavioral inhibition system (BIS), which is related to negative conditioning and sensitivity to avoidance, the behavioral activation system (BAS), which pertains to positive conditioning and sensitivity to reward, and the primarily autonomous fight-or-flight system (FFFS).
+
+The BIS/BAS scale is based on a 1994 model of the BIS/BAS hypothesis [@ipip_measure_bisbas], focusing specifically on the BIS and BAS systems. It contains one scale for BIS (Anxiety) and three scales for BAS (Fun-Seeking, Drive, and Reward-Responsiveness) for a total of 36 items.
+
+## Barchard Emotional Intelligence
+
+In her doctoral thesis, Kimberly Barchard of the University of British Columbia proposed a model of emotional intelligence including 14 constructs. Barchard identified half of these subcomponents as personality dimensions, meaning they could be measured by self-assessment rather than being cognitive abilities measured by performance [@ipip_measure_barchard].
+
+The Barchard implementation in this study uses 7 constructs: Positive Expressivity, Negative Expressivity, Attending to Emotions, Emotion-Based Decision Making, Responsive Joy, Responsive Distress, and Empathic Concern, with a total of 68 items.
+
+## IPIP Values in Action (IPIP-VIA-IS)
+
+The Values in Action Inventory of Strengths is an assessment focusing on measuring 24 character strengths among six broad virtues including wisdom, courage, humanity, justice, temperance, and transcendence. Although the current instrument is proprietary, a public-domain variant utilizing 240 (later reduced to 213) IPIP items and slightly different verbiage was constructed around 2004 [@ipip_measure_via].
+
+The official instrument has received some criticism due to factor analyses suggesting a different model. One such review found a different set of character strengths as well as only five broad virtues [@via_fa].
+
+## IPIP Trait Emotional Intelligence (IPIP-Trait EI)
+
+Trait Emotional Intelligence or Trait EI is a theoretical model about emotional intelligence developed by K.V. Petrides. In Trait EI, an individual's self-reported perceptions about their own emotional abilities is considered a measurable personality trait [@ipip_measure_traitei]. The model contains 15 traits organized under four facets: well-being, self-control, emotionality, sociability, with two traits being isolated.
+
+Trait EI is used in TEIQue, a proprietary personality assessment which has been found by factor analysis to be consistent with the theoretical model [@traitei_fa]. The implementation in this study does not use copyrighted content; each trait was manually assigned five items from the IPIP. To facilitate this process, the pool of items and traits were submitted to ChatGPT 5.4 Extended Thinking and Claude 4.6 Sonnet to reduce the total number of candidate items to 150, after which a manual subjective review yielded the final count of 75.
+
+# Results
+
+The results show that all five measures vary in psychometric support. The following table summarizes the overall structural evidence and interpretative findings:
+
+| Measure | Primary Constructs | Reliability | Factor Structure | Overall Interpretation |
+|---|---|---|---|---|
+| Big Five | 5 personality domains | Good | Good | Strong |
+| BIS/BAS | 1 BIS + 3 BAS scales | Acceptable | Good | Strong |
+| Barchard | 7 personality EI components | Acceptable | Borderline | Acceptable |
+| IPIP-VIA-IS | 24 character strengths, 6 broad virtues | Good (Virtues), Acceptable (Strengths) | Very Weak | Limited |
+| IPIP-Trait EI | 15 facets, 4 broad factors | Acceptable (Factors), Borderline (Facets) | Weak | Limited |
+
+The qualitative descriptors used in the summary table are Good, Acceptable, Borderline, Weak, and Very Weak. For reliability, Good generally indicates average internal consistency above .80, Acceptable indicates average internal consistency from .70 to .79, Borderline indicates average internal consistency from .60 to .69, and Weak indicates average internal consistency below .60. For factor structure, Good indicates clear recovery of the intended structure, Acceptable indicates near-complete recovery with minor ambiguity, Borderline indicates partial recovery with meaningful ambiguity, and Weak indicates limited recovery of the intended structure. Very Weak is reserved for cases where the empirical structure is limited and the broader literature also raises concerns about the proposed structure. The Overall Interpretation label, reported separately as Strong, Acceptable, or Limited, indicates the degree to which user-facing interpretation is recommended.
+
+## Big Five
+
+### Sample and Descriptive Statistics
+
+The Big Five sample consisted of 570 participants who completed all items related to the IPIP Big Five instrument. Demographics of this subset were similar to the full sample.
+
+The highest scoring scale was Agreeableness with an average score of 41.45, and the lowest scoring scale was Neuroticism with an average score of 24.99. The theoretical maximum was attained in 4/5 dimensions, but the theoretical minimum was only attained in 2/5 dimensions, suggesting that extremely low scores are much rarer than extremely high scores.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+big5_score_descriptives <- read_csv(
+  "../output/big5/big5_score_descriptives.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(big5_score_descriptives, digits = 2)
+```
+
+### Inter-Scale Correlations
+
+Most scales had zero-to-low correlations to each other (range -0.18-0.37), suggesting that the five domains were meaningfully distinct.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+big5_score_correlations <- read_csv(
+  "../output/big5/big5_score_correlations.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(big5_score_correlations, digits = 2)
+```
+
+### Reliability
+
+The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\omega$) for each scale were nearly identical and ranged from 0.79 (Conscientiousness) to 0.87 (Extraversion), suggesting good internal consistency. Mean inter-item correlation ranged from 0.29 (Conscientiousness) to 0.40 (Extraversion).
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+big5_score_reliabilities <- read_csv(
+  "../output/big5/big5_score_reliabilities.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(big5_score_reliabilities, digits = 2)
+```
+
+### Factor Analysis
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+big5_scored <- read_csv(
+  "../output/big5/big5_scored.csv",
+  show_col_types = FALSE
+)
+big5_scored$id <- as.character(big5_scored$id)
+
+big5_key <- read_csv("../measures/big5.csv")
+fa_items <- big5_key$id
+big5_scored_fa <- big5_scored[, fa_items]
+```
+
+#### Bartlett's Test of Sphericity
+
+Verified with a confidence test (p<0.05) that the data are not an identity matrix and therefore suitable for factor analysis.
+
+```{r}
+cortest.bartlett(big5_scored_fa)
+```
+
+#### Kaiser-Meyer-Olkin Test
+
+Verified that the data are suitable for factor analysis with an overall MSA of 0.87 (excellent).
+
+```{r}
+KMO(big5_scored_fa)
+```
+
+#### Parallel Analysis
+
+```{r}
+set.seed(0)
+fa.parallel(big5_scored_fa)
+```
+
+The parallel analysis suggested the number of factors is 6 while the number of components is 5. Both models were compared and the five-factor model aligned much more consistently with the theoretical expectations than the six-factor model. The six-factor model had the exact same factor alignment as the five-factor model, with the sixth factor having no items assigned to it.
+
+#### Principal Axis Factoring
+
+Under principal axis factoring, all items had at least one loading ≥ 0.30 and six items (12%) were cross-loaded, meaning they had a loading ≥ 0.30 on two or more components. However, with the five-factor model, every item's dominant scale matched the original, theoretical component.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 16
+
+structure_df <- read_csv(
+  "../output/big5/big5_fa_structure.csv",
+  show_col_types = FALSE
+)
+assignment_df <- read_csv(
+  "../output/big5/big5_fa_structure_assignments.csv",
+  show_col_types = FALSE
+)
+
+factor_cols <- grep("^PA", colnames(structure_df), value = TRUE)
+
+# Build shared label vector once
+item_labels <- ifelse(
+  assignment_df$cross_loading,
+  paste0(assignment_df$id, "*"),
+  assignment_df$id
+)
+
+# Helper to apply the shared factor levels
+as_item_fct <- function(x) factor(x, levels = rev(item_labels))
+as_factor_fct <- function(x) factor(x, levels = factor_cols)
+
+# Long-form structure matrix for the heatmap base layer
+structure_mat <- as.matrix(structure_df[, factor_cols])
+rownames(structure_mat) <- item_labels
+
+heatmap_df <- as.data.frame(
+  as.table(structure_mat),
+  responseName = "loading"
+) |>
+  setNames(c("item_label", "factor", "loading")) |>
+  transform(
+    item_label = as_item_fct(item_label),
+    factor = as_factor_fct(factor)
+  )
+
+# Helper to build border-tile data frames
+border_tiles <- function(df, load_col, factor_col, threshold = 0.30) {
+  df <- df[df[[load_col]] >= threshold, c("item_label", factor_col)]
+  colnames(df) <- c("item_label", "factor")
+  df$item_label <- as_item_fct(df$item_label)
+  df$factor <- as_factor_fct(df$factor)
+  df
+}
+
+assignment_df$item_label <- item_labels
+primary_tiles <- border_tiles(
+  assignment_df,
+  "primary_loading",
+  "primary_factor"
+)
+secondary_tiles <- border_tiles(
+  assignment_df,
+  "secondary_loading",
+  "secondary_factor"
+)
+
+# Plot
+ggplot(heatmap_df, aes(x = factor, y = item_label, fill = loading)) +
+  geom_tile(color = "#DDDDDD", linewidth = 0.2) +
+  geom_tile(
+    data = primary_tiles,
+    aes(x = factor, y = item_label),
+    fill = NA,
+    color = "black",
+    linewidth = 0.6,
+    inherit.aes = FALSE
+  ) +
+  geom_tile(
+    data = secondary_tiles,
+    aes(x = factor, y = item_label),
+    fill = NA,
+    color = "#CC7A00",
+    linewidth = 0.6,
+    linetype = "22",
+    inherit.aes = FALSE
+  ) +
+  scale_fill_gradient2(
+    low = "#3B4CC0",
+    mid = "#F7F7F7",
+    high = "#B40426",
+    midpoint = 0,
+    limits = c(-1, 1)
+  ) +
+  labs(
+    title = "Big Five 5-Factor Structure Matrix Heatmap",
+    subtitle = "Black border = primary loading >= .30; orange dashed border = secondary loading >= .30",
+    x = "Empirical Factor",
+    y = "Item ID",
+    fill = "Structure\nLoading",
+    caption = "* item flagged as cross-loading in the structure-assignment table"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.y = element_text(size = 6),
+    axis.text.x = element_text(size = 9),
+    plot.caption = element_text(hjust = 0)
+  )
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+big5_fa_structure_factor_alignment <- read_csv(
+  "../output/big5/big5_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(big5_fa_structure_factor_alignment, digits = 2)
+```
+
+The factor intercorrelations in the Phi matrix were low, which is consistent with the Big Five being related personality domains rather than indicators of a single common factor. Accordingly, the results do not support a global composite score.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+big5_fa_phi <- read_csv(
+  "../output/big5/big5_fa_phi.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(big5_fa_phi, digits = 2)
+```
+
+### Interpretation
+
+The Big Five personality domains showed strong internal-structure evidence in this sample. Domain reliability and the factor structure showed strong item consistency and full factor alignment with the theoretical structure.
+
+A comparison to public results from an identical test hosted by OpenPsychometrics (n=1,015,342) showed very small differences in Extraversion (d=0.16), small differences in openness (d=-0.43), medium differences in agreeableness (d=0.60) and neuroticism (d=-0.72), and large differences in conscientiousness (d=0.87) [@openpsych_rawdata]. It is likely that the domain means differences are related to different sample types (online, demographically diverse vs. in-person, demographically homogeneous.)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+welch_from_summary <- function(mean_1, sd_1, n_1, mean_2, sd_2, n_2) {
+  se_sq <- (sd_1^2 / n_1) + (sd_2^2 / n_2)
+  t_value <- (mean_1 - mean_2) / sqrt(se_sq)
+  df <- (se_sq^2) /
+    (((sd_1^2 / n_1)^2 / (n_1 - 1)) + ((sd_2^2 / n_2)^2 / (n_2 - 1)))
+  p_value <- 2 * pt(-abs(t_value), df)
+  cohen_d = (mean_1 - mean_2) / sqrt((sd_1^2 + sd_2^2) / 2)
+
+  data.frame(
+    t = t_value,
+    df = df,
+    p = p_value,
+    d = cohen_d
+  )
+}
+
+eugene_big5 <- data.frame(
+  score = c(
+    "Extraversion",
+    "Agreeableness",
+    "Conscientiousness",
+    "Neuroticism",
+    "Openness"
+  ),
+  mean = c(30.45, 41.45, 39.21, 24.99, 36.66),
+  sd = c(7.61, 5.25, 5.80, 7.56, 6.65),
+  n = c(570, 570, 570, 570, 570)
+)
+
+openpsych_big5 <- data.frame(
+  score = c(
+    "Extraversion",
+    "Agreeableness",
+    "Conscientiousness",
+    "Neuroticism",
+    "Openness"
+  ),
+  mean = c(29.13822, 37.58910, 33.42565, 30.81318, 39.38876),
+  sd = c(9.11232, 7.36330, 7.39053, 8.60677, 6.18255),
+  n = c(1015342, 1015342, 1015342, 1015342, 1015342)
+)
+
+big5_welch_df <- merge(
+  eugene_big5,
+  openpsych_big5,
+  by = "score",
+  suffixes = c("_eugene", "_openpsych"),
+  sort = FALSE
+)
+
+welch_results <- do.call(
+  rbind,
+  lapply(
+    seq_len(nrow(big5_welch_df)),
+    function(i) {
+      welch_from_summary(
+        mean_1 = big5_welch_df$mean_eugene[i],
+        sd_1 = big5_welch_df$sd_eugene[i],
+        n_1 = big5_welch_df$n_eugene[i],
+        mean_2 = big5_welch_df$mean_openpsych[i],
+        sd_2 = big5_welch_df$sd_openpsych[i],
+        n_2 = big5_welch_df$n_openpsych[i]
+      )
+    }
+  )
+)
+
+big5_welch_df <- cbind(big5_welch_df, welch_results)
+big5_welch_df$p <- format.pval(big5_welch_df$p, digits = 3, eps = 0.001)
+
+big5_welch_df <- big5_welch_df[, c(
+  "score",
+  "mean_eugene",
+  "sd_eugene",
+  "mean_openpsych",
+  "sd_openpsych",
+  "t",
+  "df",
+  "p",
+  "d"
+)]
+
+colnames(big5_welch_df) <- c(
+  "Scale",
+  "Mean (This Study)",
+  "SD (This Study)",
+  "Mean (OpenPsych)",
+  "SD (OpenPsych)",
+  "t",
+  "df",
+  "p",
+  "d"
+)
+
+knitr::kable(big5_welch_df, digits = 2)
+```
+
+## Behavioral Inhibition/Activation Systems (BIS/BAS)
+
+### Sample and Descriptive Statistics
+
+The BIS/BAS sample consisted of 461 participants who completed all items related to the IPIP BIS/BAS instrument. Demographics of this subset were similar to the full sample.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+bis_bas_score_descriptives <- read_csv(
+  "../output/bis-bas/bis-bas_score_descriptives.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(bis_bas_score_descriptives, digits = 2)
+```
+
+### Inter-Scale Correlations
+
+Most scales had low positive correlations to each other (range -0.12-0.36), suggesting that the four scales were related but still meaningfully distinct.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+bis_bas_score_correlations <- read_csv(
+  "../output/bis-bas/bis-bas_score_correlations.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(bis_bas_score_correlations, digits = 2)
+```
+
+### Reliability
+
+The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\omega$) for each scale ranged from 0.69 (Reward-Responsiveness) to 0.84 (Anxiety), suggesting acceptable to good internal consistency. Mean inter-item correlation ranged from 0.26 (Drive) to 0.34 (Anxiety).
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+bis_bas_score_reliabilities <- read_csv(
+  "../output/bis-bas/bis-bas_score_reliabilities.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(bis_bas_score_reliabilities, digits = 2)
+```
+
+### Factor Analysis
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+bis_bas_scored <- read_csv(
+  "../output/bis-bas/bis-bas_scored.csv",
+  show_col_types = FALSE
+)
+bis_bas_scored$id <- as.character(bis_bas_scored$id)
+
+bis_bas_key <- read_csv("../measures/bis-bas.csv")
+fa_items <- bis_bas_key$id
+bis_bas_scored_fa <- bis_bas_scored[, fa_items]
+```
+
+#### Bartlett's Test of Sphericity
+
+Verified with a confidence test (p<0.05) that the data are not an identity matrix and therefore suitable for factor analysis.
+
+```{r}
+cortest.bartlett(bis_bas_scored_fa)
+```
+
+#### Kaiser-Meyer-Olkin Test
+
+Verified that the data are suitable for factor analysis with an overall MSA of 0.84 (excellent).
+
+```{r}
+KMO(bis_bas_scored_fa)
+```
+
+#### Parallel Analysis
+
+```{r}
+set.seed(0)
+fa.parallel(bis_bas_scored_fa)
+```
+
+The parallel analysis suggested the number of factors and number of components is 4, which is in harmony with the theoretical model.
+
+#### Principal Axis Factoring
+
+Under principal axis factoring, all items had at least one loading ≥ 0.30 and seven items (19%) were cross-loaded, meaning they had a loading ≥ 0.30 on two or more components. All but two items matched their theoretical component, but the two that did not match cross-loaded on their original theoretical factor with loading gaps of 0.0757 and 0.0285. For this reason, it can be justified to keep these items in their original categories.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 16
+
+structure_df <- read_csv(
+  "../output/bis-bas/bis-bas_fa_structure.csv",
+  show_col_types = FALSE
+)
+assignment_df <- read_csv(
+  "../output/bis-bas/bis-bas_fa_structure_assignments.csv",
+  show_col_types = FALSE
+)
+
+factor_cols <- grep("^PA", colnames(structure_df), value = TRUE)
+
+# Build shared label vector once
+item_labels <- ifelse(
+  assignment_df$cross_loading,
+  paste0(assignment_df$id, "*"),
+  assignment_df$id
+)
+
+# Helper to apply the shared factor levels
+as_item_fct <- function(x) factor(x, levels = rev(item_labels))
+as_factor_fct <- function(x) factor(x, levels = factor_cols)
+
+# Long-form structure matrix for the heatmap base layer
+structure_mat <- as.matrix(structure_df[, factor_cols])
+rownames(structure_mat) <- item_labels
+
+heatmap_df <- as.data.frame(
+  as.table(structure_mat),
+  responseName = "loading"
+) |>
+  setNames(c("item_label", "factor", "loading")) |>
+  transform(
+    item_label = as_item_fct(item_label),
+    factor = as_factor_fct(factor)
+  )
+
+# Helper to build border-tile data frames
+border_tiles <- function(df, load_col, factor_col, threshold = 0.30) {
+  df <- df[df[[load_col]] >= threshold, c("item_label", factor_col)]
+  colnames(df) <- c("item_label", "factor")
+  df$item_label <- as_item_fct(df$item_label)
+  df$factor <- as_factor_fct(df$factor)
+  df
+}
+
+assignment_df$item_label <- item_labels
+primary_tiles <- border_tiles(
+  assignment_df,
+  "primary_loading",
+  "primary_factor"
+)
+secondary_tiles <- border_tiles(
+  assignment_df,
+  "secondary_loading",
+  "secondary_factor"
+)
+
+# Plot
+ggplot(heatmap_df, aes(x = factor, y = item_label, fill = loading)) +
+  geom_tile(color = "#DDDDDD", linewidth = 0.2) +
+  geom_tile(
+    data = primary_tiles,
+    aes(x = factor, y = item_label),
+    fill = NA,
+    color = "black",
+    linewidth = 0.6,
+    inherit.aes = FALSE
+  ) +
+  geom_tile(
+    data = secondary_tiles,
+    aes(x = factor, y = item_label),
+    fill = NA,
+    color = "#CC7A00",
+    linewidth = 0.6,
+    linetype = "22",
+    inherit.aes = FALSE
+  ) +
+  scale_fill_gradient2(
+    low = "#3B4CC0",
+    mid = "#F7F7F7",
+    high = "#B40426",
+    midpoint = 0,
+    limits = c(-1, 1)
+  ) +
+  labs(
+    title = "BIS/BAS 4-Factor Structure Matrix Heatmap",
+    subtitle = "Black border = primary loading >= .30; orange dashed border = secondary loading >= .30",
+    x = "Empirical Factor",
+    y = "Item ID",
+    fill = "Structure\nLoading",
+    caption = "* item flagged as cross-loading in the structure-assignment table"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.y = element_text(size = 6),
+    axis.text.x = element_text(size = 9),
+    plot.caption = element_text(hjust = 0)
+  )
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+bis_bas_fa_structure_factor_alignment <- read_csv(
+  "../output/bis-bas/bis-bas_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(bis_bas_fa_structure_factor_alignment, digits = 2)
+```
+
+The factor intercorrelations in the Phi matrix were low, meaning the results support interpreting the BAS subscales separately rather than aggregating them into a global composite score or a composite BAS score.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+bis_bas_fa_phi <- read_csv(
+  "../output/bis-bas/bis-bas_fa_phi.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(bis_bas_fa_phi, digits = 2)
+```
+
+### Interpretation
+
+The BIS/BAS scales showed strong internal-structure evidence in this sample. Domain reliability and the factor structure showed adequate to strong item consistency and nearly full factor alignment with the theoretical structure. The two items which did not align did have sufficient loadings to their original factors to justify their inclusion.
+
+## Barchard Emotional Intelligence
+
+### Sample and Descriptive Statistics
+
+The Barchard Emotional Intelligence sample consisted of 524 participants who completed all items related to the IPIP Barchard Emotional Intelligence instrument. Demographics of this subset were similar to the full sample.
+
+The highest scoring scale was Responsive Joy with an average score of 39.39 (average item score of 3.94), and the lowest scoring scale was Emotion-Based Decision-Making with an average score of 25.12 (average item score of 2.79.) The theoretical maximum was observed in 3/7 scales and the theoretical minimum was never observed.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+barchard_score_descriptives <- read_csv(
+  "../output/barchard/barchard_score_descriptives.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(barchard_score_descriptives, digits = 2)
+```
+
+### Inter-Scale Correlations
+
+The seven components had low-to-moderate positive correlations to each other (range 0.13-0.58; mean 0.36). This suggests that the components are meaningfully related to each other, especially the strongest intercorrelation pair of Responsive Joy and Positive Expressivity.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+barchard_score_correlations <- read_csv(
+  "../output/barchard/barchard_score_correlations.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(barchard_score_correlations, digits = 2)
+```
+
+### Reliability
+
+The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\omega$) for each scale ranged from 0.68 (Responsive Distress) to 0.83 (Attending to Emotions), suggesting acceptable internal consistency. Mean inter-item correlation ranged from 0.17 (Responsive Distress) to 0.33 (Positive Expressivity).
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+barchard_score_reliabilities <- read_csv(
+  "../output/barchard/barchard_score_reliabilities.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(barchard_score_reliabilities, digits = 2)
+```
+
+### Factor Analysis
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+barchard_scored <- read_csv(
+  "../output/barchard/barchard_scored.csv",
+  show_col_types = FALSE
+)
+barchard_scored$id <- as.character(barchard_scored$id)
+
+barchard_key <- read_csv("../measures/barchard.csv")
+fa_items <- barchard_key$id
+barchard_scored_fa <- barchard_scored[, fa_items]
+```
+
+#### Bartlett's Test of Sphericity
+
+Verified with a confidence test (p<0.05) that the data are not an identity matrix and therefore suitable for factor analysis.
+
+```{r}
+cortest.bartlett(barchard_scored_fa)
+```
+
+#### Kaiser-Meyer-Olkin Test
+
+Verified that the data are suitable for factor analysis with an overall MSA of 0.88 (excellent).
+
+```{r}
+KMO(barchard_scored_fa)
+```
+
+#### Parallel Analysis
+
+```{r}
+set.seed(0)
+fa.parallel(barchard_scored_fa)
+```
+
+Though parallel analysis suggests that the true number of factors in the model is greater than 7 (the actual reported number varies between 9 to 13 even with seed set), the factor eigenvalues experience a much lower derivative beyond 8 factors despite still being slightly above the threshold value. Therefore, the existence of at least 7 factors is clearly supported, with factors 8 through 11 being borderline.
+
+#### Principal Axis Factoring
+
+Under principal axis factoring, 64 items (94%) had at least one loading ≥ 0.30 and 27 items (40%) were cross-loaded, meaning they had a loading ≥ 0.30 on two or more components. The observed factors only partially reproduced the intended component structure, with 49 items (72%) having their highest loading match their respective theoretical assignment. None of the new factors were exactly the same as their theoretical components; although three of the factors (Attending to Emotions, Emotion-Based Decision-Making, and Empathic Concern) were quite strong, retaining all but one of their original items each, the other components experienced significant item cross-loading and scale-blending.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 16
+
+structure_df <- read_csv(
+  "../output/barchard/barchard_fa_structure.csv",
+  show_col_types = FALSE
+)
+assignment_df <- read_csv(
+  "../output/barchard/barchard_fa_structure_assignments.csv",
+  show_col_types = FALSE
+)
+
+factor_cols <- grep("^PA", colnames(structure_df), value = TRUE)
+
+# Build shared label vector once
+item_labels <- ifelse(
+  assignment_df$cross_loading,
+  paste0(assignment_df$id, "*"),
+  assignment_df$id
+)
+
+# Helper to apply the shared factor levels
+as_item_fct <- function(x) factor(x, levels = rev(item_labels))
+as_factor_fct <- function(x) factor(x, levels = factor_cols)
+
+# Long-form structure matrix for the heatmap base layer
+structure_mat <- as.matrix(structure_df[, factor_cols])
+rownames(structure_mat) <- item_labels
+
+heatmap_df <- as.data.frame(
+  as.table(structure_mat),
+  responseName = "loading"
+) |>
+  setNames(c("item_label", "factor", "loading")) |>
+  transform(
+    item_label = as_item_fct(item_label),
+    factor = as_factor_fct(factor)
+  )
+
+# Helper to build border-tile data frames
+border_tiles <- function(df, load_col, factor_col, threshold = 0.30) {
+  df <- df[df[[load_col]] >= threshold, c("item_label", factor_col)]
+  colnames(df) <- c("item_label", "factor")
+  df$item_label <- as_item_fct(df$item_label)
+  df$factor <- as_factor_fct(df$factor)
+  df
+}
+
+assignment_df$item_label <- item_labels
+primary_tiles <- border_tiles(
+  assignment_df,
+  "primary_loading",
+  "primary_factor"
+)
+secondary_tiles <- border_tiles(
+  assignment_df,
+  "secondary_loading",
+  "secondary_factor"
+)
+
+# Plot
+ggplot(heatmap_df, aes(x = factor, y = item_label, fill = loading)) +
+  geom_tile(color = "#DDDDDD", linewidth = 0.2) +
+  geom_tile(
+    data = primary_tiles,
+    aes(x = factor, y = item_label),
+    fill = NA,
+    color = "black",
+    linewidth = 0.6,
+    inherit.aes = FALSE
+  ) +
+  geom_tile(
+    data = secondary_tiles,
+    aes(x = factor, y = item_label),
+    fill = NA,
+    color = "#CC7A00",
+    linewidth = 0.6,
+    linetype = "22",
+    inherit.aes = FALSE
+  ) +
+  scale_fill_gradient2(
+    low = "#3B4CC0",
+    mid = "#F7F7F7",
+    high = "#B40426",
+    midpoint = 0,
+    limits = c(-1, 1)
+  ) +
+  labs(
+    title = "Barchard EI 7-Factor Structure Matrix Heatmap",
+    subtitle = "Black border = primary loading >= .30; orange dashed border = secondary loading >= .30",
+    x = "Empirical Factor",
+    y = "Item ID",
+    fill = "Structure\nLoading",
+    caption = "* item flagged as cross-loading in the structure-assignment table"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.y = element_text(size = 6),
+    axis.text.x = element_text(size = 9),
+    plot.caption = element_text(hjust = 0)
+  )
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+barchard_fa_structure_factor_alignment <- read_csv(
+  "../output/barchard/barchard_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(barchard_fa_structure_factor_alignment, digits = 2)
+```
+
+The factor intercorrelations in the Phi matrix were low, meaning there is no empirical support for a global Barchard Emotional Intelligence composite score.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+barchard_fa_phi <- read_csv(
+  "../output/barchard/barchard_fa_phi.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(barchard_fa_phi, digits = 2)
+```
+
+### Interpretation
+
+The Barchard implementation in this study has a partially recovered, borderline factor structure. The existence of seven factors was supported by the factor analysis, but the items did not perfectly align with their theoretical construct. Interpretation should remain cautious. The empirical factors were interpreted and in some cases slightly modified according to the content of their highest-loading items.
+
+| Factor ID | Original Name(s) | New Name |
+|---|---|---|
+| PA1 | Positive Expressivity | Expressive Affection |
+| PA2 | Responsive Distress, Empathic Concern | Empathic Concern |
+| PA3 | Attending to Emotions, Emotion-Based Decision-Making | Emotional Self-Awareness |
+| PA4 | Emotion-Based Decision-Making | Emotion-Based Decision-Making |
+| PA5 | Negative Expressivity, Responsive Distress | Distress Expressivity |
+| PA6 | Negative Expressivity | Negative Expressivity |
+| PA7 | Positive Expressivity, Responsive Joy | Responsive Joy |
+
+## IPIP Values in Action (IPIP-VIA-IS)
+
+### Sample and Descriptive Statistics
+
+The IPIP Values in Action sample consisted of 591 participants who completed all items related to the IPIP Values in Action instrument. Demographics of this subset were similar to the full sample. The VIA model in this study was represented as six virtues (scales) and 24 character strengths (subscales).
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_score_descriptives <- read_csv(
+  "../output/via/via_score_descriptives.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(via_score_descriptives, digits = 2)
+```
+
+### Inter-Scale Correlations
+
+The six broad scales had generally moderately positive correlations to each other (range 0.16-0.71; mean 0.48), suggesting that the scales are meaningfully related to each other. Correlations between scales and subscales were also moderately positive (range -0.18-0.85; mean 0.42) and correlations between subscales were low positive (range -0.27-0.67; mean 0.28). For brevity the full correlation matrix including the 24 subscales can be found in Appendix A.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_score_correlations <- read_csv(
+  "../output/via/via_score_correlations.csv",
+  show_col_types = FALSE
+)
+
+via_scale_correlations <- via_score_correlations[
+  via_score_correlations$score_level == "scale",
+]
+
+scale_ids <- via_scale_correlations$score_id
+
+via_scale_correlations <- via_scale_correlations[, c(
+  "score",
+  scale_ids
+)]
+
+knitr::kable(via_scale_correlations, digits = 2)
+```
+
+### Reliability
+
+The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\omega$) for each scale ranged from 0.81 to 0.93 (good to excellent), and 0.65 to 0.92 (typically acceptable) for each subscale. Mean inter-item correlation ranged from 0.11 (Temperance) to 0.21 (Wisdom) for scales, and 0.18 (Integrity) to 0.55 (Spirituality) for subscales.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_score_reliabilities <- read_csv(
+  "../output/via/via_score_reliabilities.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(via_score_reliabilities, digits = 2)
+```
+
+### Factor Analysis
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_scored <- read_csv(
+  "../output/via/via_scored.csv",
+  show_col_types = FALSE
+)
+via_scored$id <- as.character(via_scored$id)
+
+via_key <- read_csv("../measures/via.csv")
+```
+
+Because this instrument includes scales (virtues) and subscales (character traits), three factor analyses were performed:
+
+- item to scale; expected 6 factors
+- item to subscale; expected 24 factors
+- subscale (aggregate score of items) to scale; expected 6 factors
+
+#### Items to Scales/Subscales
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+fa_items <- via_key$id
+via_item_to_scale_scored_fa <- via_scored[, fa_items]
+
+set.seed(0)
+fa.parallel(via_item_to_scale_scored_fa)
+```
+
+The number of suggested factors (18) and components (17) are both considerably greater than the theoretical number of scales but less than the theoretical number of subscales, which implies that the items are not clearly clustering into the expected virtues/scales.
+
+A six-factor model shows very poor results. None of the factors have Justice as the dominant scale, and for each scale only around half to two-thirds of originally assigned items have remained.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_fa_structure_factor_alignment <- read_csv(
+  "../output/via/via_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(via_fa_structure_factor_alignment, digits = 2)
+```
+
+A 24-factor model does not map cleanly to the theoretical structure. The mean dominant-scale purity is 0.7144, and the mean dominant-scale alignment is 0.6703. Three component traits no longer have a dominant factor. These are Integrity (which has been spread out across Equity, Kindness, and Modesty,) Social/Personal/Emotional Intelligence (which only had seven items to begin with and was spread out across Citizenship/Leadership, and Perspective,) and Zest (which was spread out across Curiosity, Gratitude, Industry, and Originality.)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_item_to_subscale_fa_structure_factor_alignment <- read_csv(
+  "../output/via/via_item_to_subscale_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(via_item_to_subscale_fa_structure_factor_alignment, digits = 2)
+```
+
+#### Subscales to Scales
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+fa_subscales <- unique(via_key$subscale_id)
+via_subscale_to_scale_scored_fa <- via_scored[, fa_subscales]
+
+set.seed(0)
+fa.parallel(via_subscale_to_scale_scored_fa)
+```
+
+The number of suggested factors is 5 and suggested components is 4. With a six-factor model, three of the factors are small with only two or three subscales, possibly indicating oversaturation. Justice is again missing, due to its small size and being subsumed in a factor with Humanity and Transcendence subscales.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_subscale_to_scale_fa_structure_factor_alignment <- read_csv(
+  "../output/via/via_subscale_to_scale_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(via_subscale_to_scale_fa_structure_factor_alignment, digits = 2)
+```
+
+An exploratory comparison suggested that a 4-factor solution fit the strength-level data better than the theoretical 6-factor solution, indicating that the observed higher-order structure may be more compressed than the original model proposes. The groupings reflected by the 4-factor model are positive social engagement, moral restraint and fairness, self-governance, and intellectual openness/curiosity.
+
+### Interpretation
+
+The factor constructs of the VIA-IS implementation in this study show limited support for the intended structure. Reliability was acceptable to good, but the factor analyses did not recover the six-virtue or 24-strength structure cleanly. The subscale-to-scale analysis was more informative with four clear empirical factors that resembled Big Five domains (e.g., Openness, Conscientiousness, and Extraversion), though this is best treated as an exploratory alternative structure, not support for VIA scoring as designed.
+
+| Factor ID | Factor | Composed of |
+|---|---|---|
+| PA1 | Social Connectedness / Positive Interpersonal Engagement | x3 Humanity, x3 Transcendence, x2 Justice, x1 Courage |
+| PA2 | Moral Restraint / Humility and Fairness | x3 Temperance, x1 Justice, x1 Transcendence |
+| PA3 | Self-Governance / Conscientious Judgment | x2 Courage, x2 Wisdom, x1 Temperance |
+| PA4 | Intellectual Openness / Curiosity and Creativity | x3 Wisdom, x1 Courage, x1 Transcendence |
+
+## IPIP Trait Emotional Intelligence (IPIP-Trait EI)
+
+### Sample and Descriptive Statistics
+
+The IPIP Trait Emotional Intelligence sample consisted of 591 participants who completed all items related to the IPIP-Trait EI. Demographics of this subset were similar to the full sample. The Trait EI model in this study was represented as four factors (scales) and 15 facets (subscales). Two of the facets were separate from the factors, having no factor assignment.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_score_descriptives <- read_csv(
+  "../output/traitei/traitei_score_descriptives.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(traitei_score_descriptives, digits = 2)
+```
+
+### Inter-Scale Correlations
+
+The four broad scales had generally moderately positive correlations to each other (range 0.08-0.65; mean 0.42), suggesting that the scales are meaningfully related to each other. Correlations between scales and subscales were also moderately positive (range -0.06-0.85; mean 0.41) and correlations between subscales were low positive (range -0.27-0.67; mean 0.26). For brevity the full correlation matrix including the 15 subscales can be found in Appendix B.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_score_correlations <- read_csv(
+  "../output/traitei/traitei_score_correlations.csv",
+  show_col_types = FALSE
+)
+
+traitei_scale_correlations <- traitei_score_correlations[
+  traitei_score_correlations$score_level == "scale",
+]
+
+scale_ids <- traitei_scale_correlations$score_id
+
+traitei_scale_correlations <- traitei_scale_correlations[, c(
+  "score",
+  scale_ids
+)]
+
+knitr::kable(traitei_scale_correlations, digits = 2)
+```
+
+### Reliability
+
+The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\omega$) for each scale ranged from 0.72 to 0.81 (acceptable to good), and 0.53 to 0.73 (low to questionable) for each subscale. Mean inter-item correlation ranged from 0.15 (Sociability) to 0.22 (Self-Control/Well-Being) for scales, and 0.19 (Assertiveness) to 0.33 (Social Awareness) for subscales.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_score_reliabilities <- read_csv(
+  "../output/traitei/traitei_score_reliabilities.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(traitei_score_reliabilities, digits = 2)
+```
+
+### Factor Analysis
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_scored <- read_csv(
+  "../output/traitei/traitei_scored.csv",
+  show_col_types = FALSE
+)
+traitei_scored$id <- as.character(traitei_scored$id)
+
+traitei_key <- read_csv("../measures/traitei.csv")
+```
+
+Because this instrument includes scales (factors) and subscales (facets), three factor analyses were performed:
+
+- item to scale; expected 4 factors (items not associated with a scale excluded)
+- item to subscale; expected 15 factors
+- subscale (aggregate score of items) to scale; expected 4 factors
+
+#### Items to Scales/Subscales
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+fa_items <- traitei_key$id[!is.na(traitei_key$scale_id)]
+traitei_item_to_scale_scored_fa <- traitei_scored[, fa_items]
+
+set.seed(0)
+fa.parallel(traitei_item_to_scale_scored_fa)
+```
+
+The number of suggested factors (9) and components (7) are both greater than the theoretical number of scales but less than the theoretical number of subscales, which implies that the items are not clearly clustering into the expected factors.
+
+A four-factor model shows partially acceptable results. The factors Self-Control and Well-Being align very closely to their theoretical expectations, while Emotionality and Sociability mixed with each other across factors PA1 and PA3. Items in PA1 mainly concerned emotional expression and assertiveness, while items in PA3 were primarily about empathy and relationships.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_fa_structure_factor_alignment <- read_csv(
+  "../output/traitei/traitei_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(traitei_fa_structure_factor_alignment, digits = 2)
+```
+
+A 15-factor model does not map cleanly to the theoretical structure. The mean dominant-scale purity is 0.6367, and the mean dominant-scale alignment is 0.627. Two traits no longer have a dominant factor: Emotion Regulation (which is spread out across Stress Management and Impulsiveness) and Self-Esteem (which is completely spread out across five traits.)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_item_to_subscale_fa_structure_factor_alignment <- read_csv(
+  "../output/traitei/traitei_item_to_subscale_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(traitei_item_to_subscale_fa_structure_factor_alignment, digits = 2)
+```
+
+#### Subscales to Scales
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+fa_subscales <- unique(traitei_key$subscale_id)
+traitei_subscale_to_scale_scored_fa <- traitei_scored[, fa_subscales]
+
+set.seed(0)
+fa.parallel(traitei_subscale_to_scale_scored_fa)
+```
+
+The number of suggested factors is 5 and suggested components is 3. With a five-factor model, no subscales were assigned to one of the factors, so the three- and four-factor models were considered.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_subscale_to_scale_fa_structure_factor_alignment <- read_csv(
+  "../output/traitei/traitei_subscale_to_scale_fa_structure_factor_alignment.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(
+  traitei_subscale_to_scale_fa_structure_factor_alignment,
+  digits = 2
+)
+```
+
+The four-factor model again shows strong support for the Self-Control and Well-Being factors, with a blur between Emotionality and Sociability. Similar to the item-to-scale comparison, there was stronger empirical support for an Empathy/Relationships factor and an Expression/Assertiveness factor.
+
+The broader three-factor model was the exact same as the four-factor model except with the Well-Being factor combined with Emotionality.
+
+#### Interpretation
+
+The factor constructs of the Trait EI implementation showed mixed results when comparing to the theoretical model. The items-to-facets mapping was partially successful, with some facets nearly aligning with the theoretical factor design and other facets being completely spread out. Support for the four factors was stronger, with Self-Control and Well-Being having near-full empirical support, and two new factors covering empathy/relationships and emotional expression/assertiveness among the Emotionality and Sociability factors.
+
+Because this implementation required subjective item selection, Trait EI results should be interpreted as evidence about this experimental IPIP-derived implementation, not the Trait EI model generally.
+
+# Discussion
+
+The IPIP implementations of the Big Five personality domains and the BIS/BAS scales showed the strongest support for user-facing score interpretation, with strong scale reliability and clear recovery of the intended factor structures. The Barchard emotional intelligence scales demonstrated acceptable reliability results but with more ambiguity in the factor structure. The IPIP-derived Trait EI implementation showed acceptable factor-level reliability but weaker facet-level reliability, and its facet-factor organization did not agree well with the intended structure. Values in Action showed the weakest structural support, with the proposed factor structure only vaguely resembling the original model.
+
+Overall, the most successful instruments were those with broad and simple scales such as Big Five, and as domain complexity/hierarchy increased, item loadings became more ambiguous, such as with VIA-IS and Trait EI's subscales.
+
+The IPIP implementations of Big Five and BIS/BAS are likely the most useful instruments for personal insight, with strong psychometric backing. The Barchard emotional intelligence instrument offers reliable results but caution should be taken in interpretation. The Trait EI implementation should only be interpreted with explicit caution, which is partly be a result of the limited public-domain item pool available for approximating the model. Personal interpretation of the VIA-IS implementation as-is is not recommended due to lack of support for its intended factor structure.
+
+# Limitations
+
+This study had several important limitations:
+
+- the Eugene-Springfield sample was demographically homogeneous (disproportionately white, older, college-educated, middle-class)
+- results for the instruments are sample-referenced, not universal population norms
+- many of the instruments are IPIP-based approximations rather than official proprietary instruments built in tandem with the model
+- exploratory factor analysis was used rather than confirmatory modeling
+- some measures had thin item pools or manually selected items
+- hierarchical constructs may have been especially hard to approximate with public-domain proxies
+
+Note that weak recovery of an IPIP-based implementation does not necessarily invalidate the underlying theoretical model.
+
+# Conclusion
+
+In this study, five measures of personality or emotional intelligence derived from the International Personality Item Pool were evaluated with a common psychometric pipeline involving subscale scoring, reliability analyses, and factor analyses. The Big Five and BIS/BAS scales showed the strongest support, with the Barchard emotional intelligence scales having moderate support and the VIA-IS and IPIP-derived Trait EI scales demonstrating limited support. Stronger instruments are suitable for user-facing interpretation, whereas weaker implementations are better interpreted with caution and treated as exploratory models.
+
+The project demonstrates both the potential and limits of open psychometric reconstruction using public-domain item pools. Open, public access to items and sample responses facilitates performing psychometric analyses but is also limited by constrained item pools, sample characteristics, and possible misalignment with the intended theoretical model.
+
+# References
+
+::: {#refs}
+:::
+
+# Appendix A: Full IPIP-VIA-IS Correlation Matrix
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+via_score_correlations <- read_csv(
+  "../output/via/via_score_correlations.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(via_score_correlations, digits = 2)
+```
+
+# Appendix B: Full IPIP-Trait EI Correlation Matrix
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+traitei_score_correlations <- read_csv(
+  "../output/traitei/traitei_score_correlations.csv",
+  show_col_types = FALSE
+)
+
+knitr::kable(traitei_score_correlations, digits = 2)
+```
+
+# Appendix C: Item List Page URLs
+
+- Big Five: https://ipip.ori.org/newBigFive5broadKey.htm
+- BIS/BAS: https://ipip.ori.org/newBIS_BASkey.htm
+- Barchard: https://ipip.ori.org/newEmotionalIntelligenceKey.htm
+- VIA-IS: https://ipip.ori.org/newVIAKey.htm

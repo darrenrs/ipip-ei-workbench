@@ -75,7 +75,7 @@ scale_descriptor <- function(ss) {
     return("Extremely High")
   }
 
-  if (ss >= 63) {
+  if (ss >= 64) {
     return("Very High")
   }
 
@@ -83,7 +83,7 @@ scale_descriptor <- function(ss) {
     return("High Average")
   }
 
-  if (ss >= 43) {
+  if (ss >= 44) {
     return("Average")
   }
 
