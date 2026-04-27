@@ -6,14 +6,10 @@ export default function ResultsPage() {
   const { slug } = useParams();
 
   if (!slug || !instrumentBySlug[slug]) {
-    return <Navigate to="/instruments" replace />;
+    return <Navigate to="/" replace />;
   }
 
   const instrument = instrumentBySlug[slug];
-
-  if (!instrument.quizEnabled) {
-    return <Navigate to={`/instruments/${instrument.slug}`} replace />;
-  }
 
   return (
     <PageLayout>
@@ -28,9 +24,9 @@ export default function ResultsPage() {
         </section>
 
         <section className="page-section">
-          <h2 className="section-title">Scale summaries</h2>
+          <h2>Scale summaries</h2>
           <div className="grid">
-            {instrument.userFacingScales.map((scale) => (
+            {instrument.previewScales.map((scale) => (
               <article key={scale} className="card score-card">
                 <header>
                   <h3>{scale}</h3>
@@ -45,7 +41,7 @@ export default function ResultsPage() {
         </section>
 
         <section className="page-section">
-          <h2 className="section-title">Interpret carefully</h2>
+          <h2>Interpret carefully</h2>
           <div className="grid two-up">
             <article className="card results-note">
               <h3>What this page will do</h3>
@@ -66,11 +62,14 @@ export default function ResultsPage() {
 
         <section className="page-section">
           <div className="button-row">
-            <Link to={`/quiz/${instrument.slug}`} className="button-link">
+            <Link
+              to={`/instrument/${instrument.slug}/quiz`}
+              className="button-link"
+            >
               Back to quiz scaffold
             </Link>
-            <Link to="/methods" className="button-link">
-              Methods page
+            <Link to="/about" className="button-link">
+              About and disclaimer
             </Link>
           </div>
         </section>

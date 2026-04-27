@@ -1,85 +1,75 @@
 import { Link } from "react-router-dom";
-import { publicQuizInstruments, reportOnlyInstruments } from "@/lib/instruments";
+import { instruments } from "@/lib/instruments";
+import { renderInstrumentVisual } from "@/components/InstrumentVisuals";
 import PageLayout from "@/pages/PageLayout";
+
+const supportLabelMap = {
+  5: "Strong support",
+  4: "Acceptable support",
+  3: "Borderline support",
+  2: "Limited support",
+  1: "Very limited support",
+};
 
 export default function MainPage() {
   return (
     <PageLayout>
       <div className="page-stack">
-        <section className="hero hero-split">
+        <section className="hero hero-split hero-split-main-page">
           <div className="stack">
-            <h1>Open psychometrics and data-science workbench.</h1>
+            <h1>IPIP Workbench</h1>
             <p>
-              This project presents personality and psychometric instruments with
-              a portfolio mindset: clear methods, careful claims, and visible
-              separation between stronger instruments and exploratory ones.
+              A selection of five instruments touching personality and emotional
+              intelligence derived from public-domain questions and samples from
+              the{" "}
+              <a href="https://ipip.ori.org/">
+                International Personality Item Pool.
+              </a>{" "}
+              Read more about the research by clicking "Full Report" or gain
+              more insight about yourself by taking one of the five quizzes!
             </p>
             <div className="actions">
-              <Link to="/instruments">Browse instruments</Link>
-              <Link to="/methods">Methods</Link>
-              <Link to="/disclaimer">Disclaimer</Link>
+              <Link to="/about" className="button-link">
+                About These Instruments
+              </Link>
+              <a href="/report/unified_report.html">Full Report</a>
             </div>
           </div>
-
-          <aside className="surface-card project-summary">
-            <span className="label">Current public quiz set</span>
-            <ul>
-              {publicQuizInstruments.map((instrument) => (
-                <li key={instrument.slug}>{instrument.name}</li>
-              ))}
-            </ul>
-          </aside>
-        </section>
-
-        <section className="page-section">
-          <h2 className="section-title">Supported quizzes</h2>
-          <div className="grid">
-            {publicQuizInstruments.map((instrument) => (
-              <article key={instrument.slug} className="card">
-                <span
-                  className={`support-badge support-${instrument.supportLevel}`}
-                >
-                  {instrument.supportLevel.replace("-", " ")}
-                </span>
-                <h3>{instrument.name}</h3>
-                <p>{instrument.overview}</p>
-                <div className="button-row">
-                  <Link
-                    to={`/instruments/${instrument.slug}`}
-                    className="button-link"
-                  >
-                    View instrument
-                  </Link>
-                  <Link to={`/quiz/${instrument.slug}`} className="button-link">
-                    Launch quiz
-                  </Link>
-                </div>
-              </article>
-            ))}
+          <div className="hero-image-frame">
+            <img
+              src="/home-page.png"
+              alt="Image of a brain representing cognition and psychometrics"
+              className="hero-image"
+            />
           </div>
         </section>
 
         <section className="page-section">
-          <h2 className="section-title">Report-first instruments</h2>
-          <div className="grid">
-            {reportOnlyInstruments.map((instrument) => (
-              <article key={instrument.slug} className="card">
-                <span
-                  className={`support-badge support-${instrument.supportLevel}`}
-                >
-                  {instrument.supportLevel.replace("-", " ")}
-                </span>
-                <h3>{instrument.name}</h3>
-                <p>{instrument.overview}</p>
-                <div className="button-row">
-                  <Link
-                    to={`/instruments/${instrument.slug}`}
-                    className="button-link"
-                  >
-                    View instrument
-                  </Link>
-                </div>
-              </article>
+          <h2>Instruments</h2>
+          <div className="instrument-card-grid">
+            {instruments.map((instrument) => (
+              <Link
+                key={instrument.slug}
+                to={`/instrument/${instrument.slug}`}
+                className="instrument-card-link"
+              >
+                <article className="card instrument-tile">
+                  <h3>{instrument.shortName}</h3>
+                  <div className="instrument-tile-visual">
+                    {renderInstrumentVisual(instrument.slug)}
+                  </div>
+                  <div className="instrument-tile-meta">
+                    <span className="instrument-category-label">
+                      {instrument.categoryLabel}
+                    </span>
+                    <span
+                      className={`instrument-support-label support-${instrument.supportLevels.overall}`}
+                    >
+                      {supportLabelMap[instrument.supportLevels.overall]}
+                    </span>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
         </section>

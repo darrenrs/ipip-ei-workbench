@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-import { footerText, navItems, siteTitle } from "@/lib/site";
 
 type PageLayoutProps = {
   children: ReactNode;
@@ -15,14 +14,11 @@ export default function PageLayout({ children }: PageLayoutProps) {
             <span className="logo-mark" aria-hidden="true">
               <img src="/favicon.svg" alt="" />
             </span>
-            <strong>{siteTitle}</strong>
+            <strong>IPIP Workbench</strong>
           </NavLink>
           <div>
-            {navItems.map((item) => (
-              <NavLink key={item.to} to={item.to}>
-                {item.label}
-              </NavLink>
-            ))}
+            <NavLink to="/about">About</NavLink>
+            <NavLink to="/privacy">Privacy</NavLink>
           </div>
         </nav>
       </header>
@@ -30,7 +26,12 @@ export default function PageLayout({ children }: PageLayoutProps) {
       <main className="container">{children}</main>
 
       <footer className="container">
-        <p>{footerText}</p>
+        <p>
+          &copy; 2026 Darren R. Skidmore.
+          <br />
+          Built as an open psychometrics and data-science portfolio project. Not
+          a clinical or employment-use tool.
+        </p>
       </footer>
     </div>
   );

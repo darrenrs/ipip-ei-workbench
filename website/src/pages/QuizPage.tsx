@@ -6,14 +6,10 @@ export default function QuizPage() {
   const { slug } = useParams();
 
   if (!slug || !instrumentBySlug[slug]) {
-    return <Navigate to="/instruments" replace />;
+    return <Navigate to="/" replace />;
   }
 
   const instrument = instrumentBySlug[slug];
-
-  if (!instrument.quizEnabled) {
-    return <Navigate to={`/instruments/${instrument.slug}`} replace />;
-  }
 
   return (
     <PageLayout>
@@ -32,12 +28,12 @@ export default function QuizPage() {
           <div className="grid two-up">
             <article className="card">
               <h2>Interpretation</h2>
-              <p>{instrument.cautionText}</p>
+              <p>INTERPRETATION</p>
             </article>
             <article className="card">
               <h2>Scoring policy</h2>
               <p>
-                User-facing results will stay aligned with the instrument&apos;s
+                User-facing results will stay aligned with the instrument's
                 defined scales rather than alternate exploratory factors.
               </p>
             </article>
@@ -46,10 +42,13 @@ export default function QuizPage() {
 
         <section className="page-section">
           <div className="button-row">
-            <Link to={`/results/${instrument.slug}`} className="button-link">
+            <Link
+              to={`/instrument/${instrument.slug}/results`}
+              className="button-link"
+            >
               View results scaffold
             </Link>
-            <Link to={`/instruments/${instrument.slug}`} className="button-link">
+            <Link to={`/instrument/${instrument.slug}`} className="button-link">
               Back to instrument page
             </Link>
           </div>
