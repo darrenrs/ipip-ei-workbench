@@ -1,6 +1,6 @@
 import type { QuizResponseValue, QuizState } from "@/types";
 
-const DEV_OVERRIDE = true;
+const DEV_OVERRIDE = false;
 
 // temp debug use 2026-04-27
 const DEV_RESPONSES_BIS_BAS: Partial<Record<string, QuizResponseValue>> = {

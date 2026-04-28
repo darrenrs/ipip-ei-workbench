@@ -122,10 +122,16 @@ export default function InstrumentPage() {
             >
               Begin Quiz
             </Link>
-            <a href={instrument.reportLinks.measure} className="button-link">
+            <a
+              href={`${import.meta.env.BASE_URL}${instrument.reportLinks.measure}`}
+              className="button-link"
+            >
               More Info
             </a>
-            <a href={instrument.reportLinks.analysis} className="button-link">
+            <a
+              href={`${import.meta.env.BASE_URL}${instrument.reportLinks.analysis}`}
+              className="button-link"
+            >
               Reliability & Factor Analysis
             </a>
           </div>

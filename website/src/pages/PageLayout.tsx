@@ -12,7 +12,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
         <nav className="container">
           <NavLink to="/" className="brand" aria-label="Go to home page">
             <span className="logo-mark" aria-hidden="true">
-              <img src="/favicon.svg" alt="" />
+              <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" />
             </span>
             <strong>IPIP Workbench</strong>
           </NavLink>
