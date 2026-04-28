@@ -1,75 +1,76 @@
-import { Link, Navigate, useParams } from "react-router-dom";
-import { instrumentBySlug } from "@/lib/instruments";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
+import {
+  getInstrument,
+  getInstrumentData,
+  hasInstrument,
+} from "@/lib/instruments";
+import { scoreScales } from "@/lib/results";
 import PageLayout from "@/pages/PageLayout";
+import type { QuizState } from "@/types";
+
+type ResultsLocationState = {
+  quizState?: QuizState;
+};
 
 export default function ResultsPage() {
   const { slug } = useParams();
+  const location = useLocation();
+  const { quizState } = (location.state as ResultsLocationState) ?? {};
 
-  if (!slug || !instrumentBySlug[slug]) {
+  if (!slug || !hasInstrument(slug)) {
     return <Navigate to="/" replace />;
   }
 
-  const instrument = instrumentBySlug[slug];
+  if (!quizState || quizState.instrumentSlug !== slug) {
+    return <Navigate to={`/instrument/${slug}/quiz`} replace />;
+  }
+
+  const instrument = getInstrument(slug)!;
+  const instrumentData = getInstrumentData(slug)!;
+  const scaleResults = scoreScales(quizState, instrumentData);
 
   return (
     <PageLayout>
       <div className="page-stack">
         <section className="hero stack">
-          <span className="label">Results scaffold</span>
-          <h1>{instrument.name} results</h1>
-          <p>
-            This placeholder page sets the shape for readable, theory-defined
-            reporting without inventing unsupported summary claims.
-          </p>
+          <span className="label">Results</span>
+          <h1>{instrument.name} </h1>
+          <p>Your results from the quiz have been calculated.</p>
+
+          <ul>
+            <p>Attempt ID: {quizState.attemptId}</p>
+            <p>Started: {quizState.dateStarted}</p>
+            <p>Finished: {quizState.dateFinished}</p>
+          </ul>
         </section>
 
         <section className="page-section">
           <h2>Scale summaries</h2>
           <div className="grid">
-            {instrument.previewScales.map((scale) => (
-              <article key={scale} className="card score-card">
+            {scaleResults.map((scaleResult) => (
+              <article key={scaleResult.scoreId} className="card score-card">
                 <header>
-                  <h3>{scale}</h3>
-                  <span className="score-value">--</span>
+                  <h3>{scaleResult.scoreName}</h3>
+                  <span className="score-value">{scaleResult.rawScore}</span>
                 </header>
-                <p>
-                  Reserved for future scoring output and interpretation copy.
-                </p>
+                <ul>
+                  <p>
+                    T-Score: {scaleResult.standardScore} ({scaleResult.ci90})
+                  </p>
+                  <p>Percentile Rank: {scaleResult.percentileRank}</p>
+                  <p>
+                    Qualitative Descriptor: {scaleResult.qualitativeDescriptor}
+                  </p>
+                </ul>
               </article>
             ))}
           </div>
         </section>
 
         <section className="page-section">
-          <h2>Interpret carefully</h2>
-          <div className="grid two-up">
-            <article className="card results-note">
-              <h3>What this page will do</h3>
-              <p>
-                Show theory-defined scale results, concise interpretation text,
-                and links back to methods and the larger Quarto report.
-              </p>
-            </article>
-            <article className="card results-note">
-              <h3>What it will not do</h3>
-              <p>
-                Invent a single global score, overstate precision, or treat
-                exploratory factor results as the main user-facing output.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section className="page-section">
           <div className="button-row">
-            <Link
-              to={`/instrument/${instrument.slug}/quiz`}
-              className="button-link"
-            >
-              Back to quiz scaffold
-            </Link>
-            <Link to="/about" className="button-link">
-              About and disclaimer
+            <Link to={`/`} className="button-link">
+              Go Back Home
             </Link>
           </div>
         </section>

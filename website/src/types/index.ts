@@ -1,28 +1,4 @@
-export type SupportLevel = 5 | 4 | 3 | 2 | 1;
-
-export const supportOverallLabelMap = {
-  5: "Strong support",
-  4: "Acceptable support",
-  3: "Borderline support",
-  2: "Limited support",
-  1: "Very limited support",
-};
-
-export const supportReliabilityLabelMap = {
-  5: "Good reliability",
-  4: "Acceptable reliability",
-  3: "Borderline reliability",
-  2: "Weak reliability",
-  1: "Very weak reliability",
-};
-
-export const supportFactorStructureLabelMap = {
-  5: "Good factor structure",
-  4: "Acceptable factor structure",
-  3: "Borderline factor structure",
-  2: "Weak factor structure",
-  1: "Very weak factor structure",
-};
+export type SupportLevel = 4 | 3 | 2 | 1 | 0;
 
 export type Instrument = {
   slug: string;
@@ -37,31 +13,57 @@ export type Instrument = {
     factorStructure: SupportLevel;
     overall: SupportLevel;
   };
-  previewScales: string[];
   reportLinks: {
     measure: string;
     analysis: string;
   };
 };
 
-// 2026-04-26 not yet implemented
-// export type QuizItem = {
-//   id: string;
-//   instrument: string;
-//   prompt: string;
-//   scale: string;
-//   reverse?: boolean;
-//   responseOptions: number[];
-// };
+export type ItemKeyDirection = "+" | "-";
 
-// export type ScaleScore = {
-//   scale: string;
-//   rawScore: number;
-//   meanItemScore?: number;
-// };
+export type InstrumentItem = {
+  id: string;
+  prompt: string;
+  scale: string;
+  scaleId: string;
+  subscale?: string;
+  subscaleId?: string;
+  key: ItemKeyDirection;
+};
 
-// export type ScoreResult = {
-//   instrument: string;
-//   scales: ScaleScore[];
-//   interpretationVersion: string;
-// };
+export type ScoreStatistics = {
+  id: string;
+  mean: number;
+  standardDeviation: number;
+  reliability: number;
+  min: number;
+  max: number;
+};
+
+export type InstrumentKey = {
+  instrumentSlug: string;
+  items: InstrumentItem[];
+  scaleStatistics?: Record<string, ScoreStatistics>;
+  subscaleStatistics?: Record<string, ScoreStatistics>;
+};
+
+export type QuizResponseValue = 1 | 2 | 3 | 4 | 5;
+export type QuizStatus = "in-progress" | "complete";
+
+export type QuizState = {
+  attemptId: string;
+  instrumentSlug: string;
+  status: QuizStatus;
+  dateStarted: string;
+  dateFinished: string | null;
+  responses: Partial<Record<string, QuizResponseValue>>;
+};
+
+export type {
+  GeneratedInstrumentData,
+  GeneratedInstrumentItem,
+  GeneratedNorm,
+  GeneratedNormDescriptives,
+  GeneratedNormReliability,
+  GeneratedReferenceRow,
+} from "@/types/instrumentData";

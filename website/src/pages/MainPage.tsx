@@ -1,15 +1,8 @@
 import { Link } from "react-router-dom";
-import { instruments } from "@/lib/instruments";
+import { instruments } from "@/lib/data/instrumentMetadata";
+import { supportOverallLabelMap } from "@/lib/supportLabels";
 import { renderInstrumentVisual } from "@/components/InstrumentVisuals";
 import PageLayout from "@/pages/PageLayout";
-
-const supportLabelMap = {
-  5: "Strong support",
-  4: "Acceptable support",
-  3: "Borderline support",
-  2: "Limited support",
-  1: "Very limited support",
-};
 
 export default function MainPage() {
   return (
@@ -65,7 +58,7 @@ export default function MainPage() {
                     <span
                       className={`instrument-support-label support-${instrument.supportLevels.overall}`}
                     >
-                      {supportLabelMap[instrument.supportLevels.overall]}
+                      {supportOverallLabelMap[instrument.supportLevels.overall]}
                     </span>
                   </div>
                 </article>
