@@ -1,4 +1,3 @@
-import { instrumentGeneratedDataBySlug } from "@/lib/data/instrumentGeneratedData";
 import { instrumentMetadataBySlug } from "@/lib/data/instrumentMetadata";
 import type { GeneratedInstrumentData, Instrument } from "@/types";
 
@@ -6,14 +5,8 @@ export function getInstrument(slug: string): Instrument | undefined {
   return instrumentMetadataBySlug[slug];
 }
 
-export function getInstrumentData(
-  slug: string,
-): GeneratedInstrumentData | undefined {
-  return instrumentGeneratedDataBySlug[slug];
-}
-
 export function hasInstrument(slug: string): boolean {
-  return Boolean(getInstrument(slug) && getInstrumentData(slug));
+  return Boolean(getInstrument(slug));
 }
 
 export function getScaleNames(data: GeneratedInstrumentData): string[] {

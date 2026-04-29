@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { loadInstrumentGeneratedData } from "@/lib/data/instrumentGeneratedData";
 import { responseOptions } from "@/lib/quizLabels";
-import { getInstrument, getInstrumentData, hasInstrument } from "@/lib/instruments";
+import { getInstrument } from "@/lib/instruments";
 import PageLayout from "@/pages/PageLayout";
 import { createQuizState } from "@/lib/quizState";
-import type { QuizResponseValue, QuizState } from "@/types";
+import type {
+  GeneratedInstrumentData,
+  QuizResponseValue,
+  QuizState,
+} from "@/types";
 
 export default function QuizPage() {
   const { slug } = useParams();
 
-  if (!slug || !hasInstrument(slug)) {
+  if (!slug) {
+    return <Navigate to="/" replace />;
+  }
+
+  const instrument = getInstrument(slug);
+
+  if (!instrument) {
     return <Navigate to="/" replace />;
   }
 
@@ -22,12 +33,85 @@ type QuizPageContentProps = {
 
 function QuizPageContent({ slug }: QuizPageContentProps) {
   const navigate = useNavigate();
+  const instrument = getInstrument(slug)!;
   const [quizState, setQuizState] = useState<QuizState>(() =>
     createQuizState(slug),
   );
+  const [loadState, setLoadState] = useState<{
+    instrumentData: GeneratedInstrumentData | null;
+    loadError: boolean;
+  }>({
+    instrumentData: null,
+    loadError: false,
+  });
 
-  const instrument = getInstrument(slug)!;
-  const instrumentData = getInstrumentData(slug)!;
+  useEffect(() => {
+    let isActive = true;
+
+    loadInstrumentGeneratedData(slug)
+      .then((data) => {
+        if (!isActive) {
+          return;
+        }
+
+        setLoadState({
+          instrumentData: data,
+          loadError: false,
+        });
+      })
+      .catch(() => {
+        if (!isActive) {
+          return;
+        }
+
+        setLoadState({
+          instrumentData: null,
+          loadError: true,
+        });
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [slug]);
+
+  const { instrumentData, loadError } = loadState;
+  const isLoading = instrumentData === null && !loadError;
+  const labelText = loadError
+    ? `Failed to load data for ${slug}. Please refresh the page to try again.`
+    : isLoading
+      ? `Loading ${slug} ...`
+      : "Quiz";
+
+  if (!instrumentData) {
+    return (
+      <PageLayout>
+        <div className="page-stack">
+          <section className="hero stack">
+            <span className="label">{labelText}</span>
+            <h1>{instrument.name}</h1>
+            <p>
+              For each of the questions, please select how well the statement
+              describes you. To ensure maximum accuracy, you must answer all
+              questions to see your results. Your results are not currently
+              stored or saved anywhere.
+            </p>
+          </section>
+          <section className="page-section">
+            <div className="button-row">
+              <Link
+                to={`/instrument/${instrument.slug}`}
+                className="button-link"
+              >
+                Back
+              </Link>
+            </div>
+          </section>
+        </div>
+      </PageLayout>
+    );
+  }
+
   const totalItems = instrumentData.items.length;
   const answeredCount = instrumentData.items.filter(
     (item) => quizState.responses[item.id] !== undefined,
@@ -65,7 +149,7 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
     <PageLayout>
       <div className="page-stack">
         <section className="hero stack">
-          <span className="label">Quiz</span>
+          <span className="label">{labelText}</span>
           <h1>{instrument.name}</h1>
           <p>
             For each of the questions, please select how well the statement

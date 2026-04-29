@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { loadInstrumentGeneratedData } from "@/lib/data/instrumentGeneratedData";
 import {
   supportOverallLabelMap,
   supportReliabilityLabelMap,
@@ -6,32 +8,88 @@ import {
 } from "@/lib/supportLabels";
 import {
   getInstrument,
-  getInstrumentData,
   getScaleNames,
   getSubscaleNames,
-  hasInstrument,
 } from "@/lib/instruments";
 import PageLayout from "@/pages/PageLayout";
+import type { GeneratedInstrumentData } from "@/types";
 
 export default function InstrumentPage() {
   const { slug } = useParams();
 
-  if (!slug || !hasInstrument(slug)) {
+  if (!slug) {
     return <Navigate to="/" replace />;
   }
 
-  const instrument = getInstrument(slug)!;
-  const instrumentData = getInstrumentData(slug)!;
+  const instrument = getInstrument(slug);
 
-  const scaleNames = getScaleNames(instrumentData);
-  const subscaleNames = getSubscaleNames(instrumentData);
+  if (!instrument) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <InstrumentPageContent key={slug} slug={slug} />;
+}
+
+type InstrumentPageContentProps = {
+  slug: string;
+};
+
+function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
+  const instrument = getInstrument(slug)!;
+  const [loadState, setLoadState] = useState<{
+    instrumentData: GeneratedInstrumentData | null;
+    loadError: boolean;
+  }>({
+    instrumentData: null,
+    loadError: false,
+  });
+
+  useEffect(() => {
+    let isActive = true;
+
+    loadInstrumentGeneratedData(slug)
+      .then((data) => {
+        if (!isActive) {
+          return;
+        }
+
+        setLoadState({
+          instrumentData: data,
+          loadError: false,
+        });
+      })
+      .catch(() => {
+        if (!isActive) {
+          return;
+        }
+
+        setLoadState({
+          instrumentData: null,
+          loadError: true,
+        });
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [slug]);
+
+  const { instrumentData, loadError } = loadState;
+  const isLoading = instrumentData === null && !loadError;
+  const scaleNames = instrumentData ? getScaleNames(instrumentData) : [];
+  const subscaleNames = instrumentData ? getSubscaleNames(instrumentData) : [];
+  const labelText = loadError
+    ? `Failed to load data for ${slug}. Please refresh the page to try again.`
+    : isLoading
+      ? `Loading ${slug} ...`
+      : "Synopsis";
 
   return (
     <PageLayout>
       <div className="page-stack">
         <section className="hero hero-split">
           <div className="stack">
-            <span className="label">Synopsis</span>
+            <span className="label">{labelText}</span>
             <h1>{instrument.name}</h1>
             <p>{instrument.description}</p>
           </div>
@@ -44,8 +102,12 @@ export default function InstrumentPage() {
               <strong>Summary: </strong> {instrument.summary}
             </p>
             <p>
-              <strong>Length: </strong> {instrumentData.items.length} items (~
-              {Math.ceil(instrumentData.items.length / 10)} min to take)
+              <strong>Length: </strong>{" "}
+              {instrumentData
+                ? `${instrumentData.items.length} items (~${Math.ceil(
+                    instrumentData.items.length / 10,
+                  )} min to take)`
+                : "Loading..."}
             </p>
             <p>
               <strong>Model Author:</strong> {instrument.modelAuthor}
@@ -78,18 +140,20 @@ export default function InstrumentPage() {
           </aside>
         </section>
 
-        <section className="page-section">
-          <h2>Scales</h2>
-          <div className="tag-row">
-            {scaleNames.map((scale) => (
-              <span key={scale} className="tag">
-                {scale}
-              </span>
-            ))}
-          </div>
-        </section>
+        {instrumentData ? (
+          <section className="page-section">
+            <h2>Scales</h2>
+            <div className="tag-row">
+              {scaleNames.map((scale) => (
+                <span key={scale} className="tag">
+                  {scale}
+                </span>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
-        {subscaleNames.length > 0 ? (
+        {instrumentData && subscaleNames.length > 0 ? (
           <section className="page-section">
             <h2>Subscales</h2>
             <div className="tag-row">
@@ -116,12 +180,14 @@ export default function InstrumentPage() {
             ""
           )}
           <div className="button-row">
-            <Link
-              to={`/instrument/${instrument.slug}/quiz`}
-              className="button-link"
-            >
-              Begin Quiz
-            </Link>
+            {instrumentData ? (
+              <Link
+                to={`/instrument/${instrument.slug}/quiz`}
+                className="button-link"
+              >
+                Begin Quiz
+              </Link>
+            ) : null}
             <a
               href={`${import.meta.env.BASE_URL}${instrument.reportLinks.measure}`}
               className="button-link"

@@ -4,6 +4,7 @@ __pycache__/
 
 # Output
 output/
+website/public/instruments/*
 
 # Quarto rendered output and cache
 .quarto/
@@ -13,6 +14,7 @@ reports/**/*_files/
 # Rendered documents
 reports/**/*.html
 reports/**/*.pdf
+Rplots.pdf
 
 # R session and project artifacts
 .Rhistory
@@ -45,4 +47,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-

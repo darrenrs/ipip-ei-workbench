@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "generate-data": "python3 ../scripts/python/create_website_instrument_data.py",
+    "dev": "npm run generate-data && vite",
+    "build": "npm run generate-data && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

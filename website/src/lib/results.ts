@@ -19,6 +19,21 @@ function scoreResponse(value: QuizResponseValue, key: "+" | "-"): number {
   return key === "-" ? 6 - value : value;
 }
 
+export function testDurationFormatted(start: string, end: string) {
+  const startDate = new Date(start).getTime();
+  const endDate = new Date(end).getTime();
+
+  if (Number.isNaN(startDate) || Number.isNaN(endDate)) {
+    throw new Error("Invalid date");
+  }
+
+  const totalSeconds = Math.floor((endDate - startDate) / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}m ${String(seconds).padStart(2, "0")}s`;
+}
+
 export function scoreScales(
   quizState: QuizState,
   instrumentData: GeneratedInstrumentData,
