@@ -7,9 +7,49 @@ import PageLayout from "@/pages/PageLayout";
 import { createQuizState } from "@/lib/quizState";
 import type {
   GeneratedInstrumentData,
+  GeneratedInstrumentItem,
   QuizResponseValue,
   QuizState,
 } from "@/types";
+
+const QUIZ_ORDER_SEED = "mammoth";
+
+function hashSeededValue(input: string) {
+  let hash = 2166136261;
+
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return hash >>> 0;
+}
+
+function getOrderedQuizItems(
+  slug: string,
+  items: GeneratedInstrumentItem[],
+): GeneratedInstrumentItem[] {
+  const orderedItems = items
+    .map((item, index) => ({
+      item,
+      index,
+      sortKey: hashSeededValue(`${QUIZ_ORDER_SEED}:${slug}:${item.id}`),
+    }))
+    .sort(
+      (left, right) => left.sortKey - right.sortKey || left.index - right.index,
+    )
+    .map(({ item }) => item);
+
+  const matchesSourceOrder = orderedItems.every(
+    (item, index) => item.id === items[index]?.id,
+  );
+
+  if (matchesSourceOrder && orderedItems.length > 1) {
+    return [...orderedItems.slice(1), orderedItems[0]];
+  }
+
+  return orderedItems;
+}
 
 export default function QuizPage() {
   const { slug } = useParams();
@@ -112,8 +152,9 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
     );
   }
 
-  const totalItems = instrumentData.items.length;
-  const answeredCount = instrumentData.items.filter(
+  const orderedItems = getOrderedQuizItems(slug, instrumentData.items);
+  const totalItems = orderedItems.length;
+  const answeredCount = orderedItems.filter(
     (item) => quizState.responses[item.id] !== undefined,
   ).length;
   const progressPercent = (answeredCount / totalItems) * 100;
@@ -160,14 +201,14 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
         </section>
         <section className="page-section">
           <div className="question-list">
-            {instrumentData.items.map((item, index) => {
+            {orderedItems.map((item, index) => {
               const selectedResponse = quizState.responses[item.id];
 
               return (
                 <article key={item.id} className="card question-card">
                   <div className="question-card-main">
                     <p className="question-count">
-                      ITEM {index + 1} / {instrumentData.items.length}
+                      ITEM {index + 1} / {orderedItems.length}
                     </p>
                     <h3 className="question-prompt">{item.prompt}</h3>
                     <p className="question-metadata">

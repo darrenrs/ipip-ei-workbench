@@ -10,9 +10,9 @@ export default function PrivacyPage() {
         <section className="page-section">
           <div className="privacy-summary">
             <p>
-              No quiz responses are collected and everything is computed and
-              stored in the browser. However, non-identifying analytics data may
-              be collected by Cloudflare.
+              No quiz responses are collected or stored server-side; all
+              responses are computed locally in the browser. However,
+              non-identifying analytics data may be collected by Cloudflare.
             </p>
           </div>
         </section>

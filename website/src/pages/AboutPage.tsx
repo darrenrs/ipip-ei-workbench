@@ -6,7 +6,7 @@ const aboutItems = [
   "The interactive portion of this website omits most technical information for maximum accessibility. Interested users or researchers may consult the full Quarto report.",
   "Some exploratory factor solutions that differ from the intended factor structure are found in the report, but this website does not use them at this time.",
   "Results are not currently sent or stored anywhere. In the future, the ability to save results to the browser may be added.",
-  "This website and associated pipeline code is 100% open-source and will be released under the provisions of the MIT license for v1.0.",
+  "This website and associated pipeline code is 100% open-source and is currently under the provisions of the MIT license.",
 ];
 
 const limitationItems = [
