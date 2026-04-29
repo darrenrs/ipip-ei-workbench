@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { withBaseUrl } from "@/lib/baseUrl";
 import { loadInstrumentGeneratedData } from "@/lib/data/instrumentGeneratedData";
 import {
   supportOverallLabelMap,
@@ -105,12 +106,16 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
               <strong>Length: </strong>{" "}
               {instrumentData
                 ? `${instrumentData.items.length} items (~${Math.ceil(
-                    instrumentData.items.length / 10,
-                  )} min to take)`
+                    instrumentData.items.length / 9,
+                  )}-${Math.ceil(instrumentData.items.length / 6)} min to take)`
                 : "Loading..."}
             </p>
             <p>
-              <strong>Model Author:</strong> {instrument.modelAuthor}
+              <strong>
+                Model Author{instrument.modelAuthor.indexOf(";") > 0 ? "s" : ""}
+                :
+              </strong>{" "}
+              {instrument.modelAuthor}
             </p>
             <div className="support-badge-row">
               <span
@@ -189,13 +194,13 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
               </Link>
             ) : null}
             <a
-              href={`${import.meta.env.BASE_URL}${instrument.reportLinks.measure}`}
+              href={withBaseUrl(instrument.reportLinks.measure)}
               className="button-link"
             >
               More Info
             </a>
             <a
-              href={`${import.meta.env.BASE_URL}${instrument.reportLinks.analysis}`}
+              href={withBaseUrl(instrument.reportLinks.analysis)}
               className="button-link"
             >
               Reliability & Factor Analysis

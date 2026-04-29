@@ -64,26 +64,30 @@ def build_items(measures_dir: Path, measure_id: str) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
 
     for row in rows:
-        scale = clean_string(row.get("scale")) or clean_string(row.get("subscale"))
-        scale_id = clean_string(row.get("scale_id")) or clean_string(
-            row.get("subscale_id")
-        )
+        scale = maybe_string(row.get("scale"))
+        scale_id = maybe_string(row.get("scale_id"))
         subscale = maybe_string(row.get("subscale"))
         subscale_id = maybe_string(row.get("subscale_id"))
 
-        if not scale or not scale_id:
+        if (scale is None) != (scale_id is None):
             raise ValueError(
-                f"Missing scale or scale_id for item {row.get('id')!r} in {measure_id}.csv"
+                f"Mismatched scale/scale_id for item {row.get('id')!r} in {measure_id}.csv"
+            )
+
+        if scale is None and subscale is None:
+            raise ValueError(
+                f"Missing both scale and subscale for item {row.get('id')!r} in {measure_id}.csv"
             )
 
         item = {
             "id": clean_string(row.get("id")),
             "prompt": clean_string(row.get("name")),
-            "scale": scale,
-            "scaleId": scale_id,
             "key": clean_string(row.get("key")),
         }
 
+        if scale:
+            item["scale"] = scale
+            item["scaleId"] = scale_id
         if subscale:
             item["subscale"] = subscale
         if subscale_id:

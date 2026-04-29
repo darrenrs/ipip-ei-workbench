@@ -236,9 +236,6 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
             >
               Submit
             </button>
-            <Link to={`/instrument/${instrument.slug}`} className="button-link">
-              Back
-            </Link>
           </div>
         </section>
       </div>

@@ -38,8 +38,8 @@ export type GeneratedNorm = {
 export type GeneratedInstrumentItem = {
   id: string;
   prompt: string;
-  scale: string;
-  scaleId: string;
+  scale?: string;
+  scaleId?: string;
   subscale?: string;
   subscaleId?: string;
   key: "+" | "-";

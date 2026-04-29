@@ -67,3 +67,8 @@ export type {
   GeneratedNormReliability,
   GeneratedReferenceRow,
 } from "@/types/instrumentData";
+export type {
+  ResultsTableRow,
+  ScoreLevel,
+  ScoreResult,
+} from "@/types/results";

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { withBaseUrl } from "@/lib/baseUrl";
 import { instruments } from "@/lib/data/instrumentMetadata";
 import { supportOverallLabelMap } from "@/lib/supportLabels";
 import { renderInstrumentVisual } from "@/components/InstrumentVisuals";
@@ -25,14 +26,14 @@ export default function MainPage() {
               <Link to="/about" className="button-link">
                 About These Instruments
               </Link>
-              <a href={`${import.meta.env.BASE_URL}report/unified_report.html`}>
+              <a href={withBaseUrl("report/unified_report.html")}>
                 Full Report
               </a>
             </div>
           </div>
           <div className="hero-image-frame">
             <img
-              src={`${import.meta.env.BASE_URL}home-page.png`}
+              src={withBaseUrl("home-page.png")}
               alt="Image of a brain representing cognition and psychometrics"
               className="hero-image"
             />
