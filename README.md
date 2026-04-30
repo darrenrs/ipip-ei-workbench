@@ -43,11 +43,17 @@ The website, which is based on a simple React/Vite stack offers an interactive w
 
 ### How to Run
 
-First, clone this repository to your computer, and ensure that `node` and `python3` (only standard libraries required) are available in PATH. Then follow these steps:
+First, clone this repository to your computer, and ensure that `node` and `python3` (only standard libraries required) are available in PATH. Make sure that the first three R scripts in the pipeline have already been ran as this is mandatory for deriving the sample statistics. Then follow these steps:
 
 1. `cd website`
 2. `npm install`
 3. `npm run dev` or `npm run build && npm run preview`
+
+## Todo
+
+- High Priority: Add descriptions about scales and subscales
+- High Priority: Reload page in quiz shows a warning
+- Medium Priority: Save results to browser
 
 ## Privacy Notice and Copyright
 

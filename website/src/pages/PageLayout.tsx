@@ -19,6 +19,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <div>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/privacy">Privacy</NavLink>
+            <a href="https://github.com/darrenrs/ipip-workbench">GitHub</a>
           </div>
         </nav>
       </header>

@@ -11,7 +11,7 @@ const aboutItems = [
 
 const limitationItems = [
   "This website is not a clinical service, diagnostic tool, hiring product, or treatment resource.",
-  "User-facing results should be read as descriptive tendencies rather than fixed truths.",
+  "Results are intended to be interpreted by the user as descriptive tendencies rather than fixed truths.",
   "Some instruments have borderline or limited support for factor analysis, and as such it is not recommended to interpret those results in a serious way.",
   "Percentile ranks and qualitative descriptors are based on a college-educated, middle-aged, White American sample and likely to be inaccurate for people outside those strata.",
   "This website does not use proprietary instruments or professionally validated norms. Instrument, scale, and subscale names are derived from models found in the literature, not commercial products.",
