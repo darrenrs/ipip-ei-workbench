@@ -37,6 +37,9 @@ function sortAttemptsDescending(attempts: QuizState[]): QuizState[] {
 export default function SavedResultsList({
   instrumentSlug,
 }: SavedResultsListProps) {
+  const [attemptIdPendingDeletion, setAttemptIdPendingDeletion] = useState<
+    string | null
+  >(null);
   const [attempts, setAttempts] = useState(() =>
     sortAttemptsDescending(
       loadCompletedQuizStates().filter(
@@ -47,18 +50,11 @@ export default function SavedResultsList({
   );
 
   function deleteAttempt(attemptId: string) {
-    const shouldDelete = window.confirm(
-      "Delete this saved result? This cannot be undone.",
-    );
-
-    if (!shouldDelete) {
-      return;
-    }
-
     deleteCompletedQuizState(attemptId);
     setAttempts((currentAttempts) =>
       currentAttempts.filter((attempt) => attempt.attemptId !== attemptId),
     );
+    setAttemptIdPendingDeletion(null);
   }
 
   if (attempts.length === 0) {
@@ -78,22 +74,50 @@ export default function SavedResultsList({
               <p>{formatAttemptTimestamp(attempt)}</p>
             </div>
             <div className="saved-result-actions">
-              <Link
-                className="button-link saved-result-view"
-                to={`/instrument/${attempt.instrumentSlug}/results/${attempt.attemptId}`}
-              >
-                View Results
-              </Link>
-              <button
-                type="button"
-                className="saved-result-delete"
-                aria-label={`Delete ${instrumentName} result from ${formatAttemptTimestamp(
-                  attempt,
-                )}`}
-                onClick={() => deleteAttempt(attempt.attemptId)}
-              >
-                x
-              </button>
+              {attemptIdPendingDeletion === attempt.attemptId ? (
+                <div
+                  className="saved-result-confirmation"
+                  role="group"
+                  aria-label={`Confirm deletion of ${instrumentName} result`}
+                >
+                  <span>Delete this result?</span>
+                  <button
+                    type="button"
+                    className="saved-result-confirm"
+                    onClick={() => deleteAttempt(attempt.attemptId)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    className="saved-result-cancel"
+                    onClick={() => setAttemptIdPendingDeletion(null)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link
+                    className="button-link saved-result-view"
+                    to={`/instrument/${attempt.instrumentSlug}/results/${attempt.attemptId}`}
+                  >
+                    View Results
+                  </Link>
+                  <button
+                    type="button"
+                    className="saved-result-delete"
+                    aria-label={`Delete ${instrumentName} result from ${formatAttemptTimestamp(
+                      attempt,
+                    )}`}
+                    onClick={() =>
+                      setAttemptIdPendingDeletion(attempt.attemptId)
+                    }
+                  >
+                    x
+                  </button>
+                </>
+              )}
             </div>
           </article>
         );

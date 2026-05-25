@@ -633,6 +633,48 @@ footer a {
   transform: translateY(-1px);
 }
 
+.saved-result-confirmation {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.saved-result-confirm,
+.saved-result-cancel {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-header);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.55rem 0.75rem;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.saved-result-confirm {
+  border-color: color-mix(in srgb, #ef4444, var(--border) 30%);
+  background: color-mix(in srgb, #ef4444, var(--bg) 82%);
+  color: #f87171;
+}
+
+.saved-result-cancel {
+  background: color-mix(in srgb, var(--surface), var(--bg) 35%);
+  color: var(--muted);
+}
+
+.saved-result-confirm:hover,
+.saved-result-cancel:hover {
+  border-color: var(--support-1);
+  color: var(--support-1);
+  transform: translateY(-1px);
+}
+
 .score-card header {
   position: static;
   backdrop-filter: none;
