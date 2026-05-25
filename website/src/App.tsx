@@ -15,6 +15,10 @@ export default function App() {
       <Route path="/instrument/:slug" element={<InstrumentPage />} />
       <Route path="/instrument/:slug/quiz" element={<QuizPage />} />
       <Route path="/instrument/:slug/results" element={<ResultsPage />} />
+      <Route
+        path="/instrument/:slug/results/:attemptId"
+        element={<ResultsPage />}
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

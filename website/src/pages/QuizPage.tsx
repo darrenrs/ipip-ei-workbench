@@ -5,6 +5,12 @@ import { responseOptions } from "@/lib/quizLabels";
 import { getInstrument } from "@/lib/instruments";
 import PageLayout from "@/pages/PageLayout";
 import { createQuizState } from "@/lib/quizState";
+import {
+  clearActiveQuizState,
+  loadActiveQuizState,
+  saveActiveQuizState,
+  saveCompletedQuizState,
+} from "@/lib/quizStorage";
 import type {
   GeneratedInstrumentData,
   GeneratedInstrumentItem,
@@ -75,7 +81,7 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
   const navigate = useNavigate();
   const instrument = getInstrument(slug)!;
   const [quizState, setQuizState] = useState<QuizState>(() =>
-    createQuizState(slug),
+    loadActiveQuizState(slug) ?? createQuizState(slug),
   );
   const [loadState, setLoadState] = useState<{
     instrumentData: GeneratedInstrumentData | null;
@@ -123,6 +129,41 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
       ? `Loading ${slug} ...`
       : "Quiz";
 
+  const orderedItems = instrumentData
+    ? getOrderedQuizItems(slug, instrumentData.items)
+    : [];
+  const totalItems = orderedItems.length;
+  const answeredCount = orderedItems.filter(
+    (item) => quizState.responses[item.id] !== undefined,
+  ).length;
+  const progressPercent = totalItems > 0 ? (answeredCount / totalItems) * 100 : 0;
+  const isComplete = totalItems > 0 && answeredCount === totalItems;
+  const shouldWarnBeforeUnload =
+    instrumentData !== null && quizState.status === "in-progress";
+
+  useEffect(() => {
+    if (quizState.status === "in-progress") {
+      saveActiveQuizState(quizState);
+    }
+  }, [quizState]);
+
+  useEffect(() => {
+    if (!shouldWarnBeforeUnload) {
+      return;
+    }
+
+    function warnBeforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+
+    window.addEventListener("beforeunload", warnBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", warnBeforeUnload);
+    };
+  }, [shouldWarnBeforeUnload]);
+
   if (!instrumentData) {
     return (
       <PageLayout>
@@ -133,8 +174,9 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
             <p>
               For each of the questions, please select how well the statement
               describes you. To ensure maximum accuracy, you must answer all
-              questions to see your results. Your results are not currently
-              stored or saved anywhere.
+              questions to see your results. In-progress answers are saved in
+              this browser session, and completed results are saved locally in
+              this browser.
             </p>
           </section>
           <section className="page-section">
@@ -152,14 +194,6 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
     );
   }
 
-  const orderedItems = getOrderedQuizItems(slug, instrumentData.items);
-  const totalItems = orderedItems.length;
-  const answeredCount = orderedItems.filter(
-    (item) => quizState.responses[item.id] !== undefined,
-  ).length;
-  const progressPercent = (answeredCount / totalItems) * 100;
-  const isComplete = answeredCount === totalItems;
-
   function selectResponse(itemId: string, value: QuizResponseValue) {
     setQuizState((current) => ({
       ...current,
@@ -175,15 +209,23 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
       return;
     }
 
-    navigate(`/instrument/${instrument.slug}/results`, {
-      state: {
-        quizState: {
-          ...quizState,
-          status: "complete",
-          dateFinished: new Date().toISOString(),
+    const completedQuizState: QuizState = {
+      ...quizState,
+      status: "complete",
+      dateFinished: new Date().toISOString(),
+    };
+
+    saveCompletedQuizState(completedQuizState);
+    clearActiveQuizState(instrument.slug);
+
+    navigate(
+      `/instrument/${instrument.slug}/results/${completedQuizState.attemptId}`,
+      {
+        state: {
+          quizState: completedQuizState,
         },
       },
-    });
+    );
   }
 
   return (
@@ -195,8 +237,9 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
           <p>
             For each of the questions, please select how well the statement
             describes you. To ensure maximum accuracy, you must answer all
-            questions to see your results. Your results are not currently stored
-            or saved anywhere.
+            questions to see your results. In-progress answers are saved in this
+            browser session, and completed results are saved locally in this
+            browser.
           </p>
         </section>
         <section className="page-section">

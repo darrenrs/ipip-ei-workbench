@@ -206,8 +206,8 @@ export function buildResultsTableRows(
 
   for (const scaleResult of scaleResults) {
     rows.push({
-      scaleName: scaleResult.scoreName,
-      subscaleName: null,
+      scoreLevel: "scale",
+      scoreName: scaleResult.scoreName,
       rawScoreDisplay: String(scaleResult.rawScore),
       standardScoreDisplay: scaleResult.standardScoreDisplay,
       ci90Display: scaleResult.ci90Display,
@@ -222,8 +222,8 @@ export function buildResultsTableRows(
     for (const subscaleResult of matchingSubscales) {
       renderedSubscaleIds.add(subscaleResult.scoreId);
       rows.push({
-        scaleName: null,
-        subscaleName: subscaleResult.scoreName,
+        scoreLevel: "subscale",
+        scoreName: subscaleResult.scoreName,
         rawScoreDisplay: String(subscaleResult.rawScore),
         standardScoreDisplay: subscaleResult.standardScoreDisplay,
         ci90Display: subscaleResult.ci90Display,
@@ -239,8 +239,8 @@ export function buildResultsTableRows(
 
   if (orphanSubscales.length > 0) {
     rows.push({
-      scaleName: "(other)",
-      subscaleName: null,
+      scoreLevel: "scale",
+      scoreName: "(other)",
       rawScoreDisplay: "",
       standardScoreDisplay: "",
       ci90Display: "",
@@ -250,8 +250,8 @@ export function buildResultsTableRows(
 
     for (const subscaleResult of orphanSubscales) {
       rows.push({
-        scaleName: null,
-        subscaleName: subscaleResult.scoreName,
+        scoreLevel: "subscale",
+        scoreName: subscaleResult.scoreName,
         rawScoreDisplay: String(subscaleResult.rawScore),
         standardScoreDisplay: subscaleResult.standardScoreDisplay,
         ci90Display: subscaleResult.ci90Display,

@@ -18,6 +18,11 @@ import {
   scoreSubscales,
   testDurationFormatted,
 } from "@/lib/results";
+import {
+  buildScoreDescriptionSections,
+  type DescribedScore,
+} from "@/lib/scoreDescriptions";
+import { loadCompletedQuizState } from "@/lib/quizStorage";
 import PageLayout from "@/pages/PageLayout";
 import type { GeneratedInstrumentData, QuizState } from "@/types";
 
@@ -25,10 +30,94 @@ type ResultsLocationState = {
   quizState?: QuizState;
 };
 
+const MOBILE_RADAR_LABELS_BY_INSTRUMENT: Record<
+  string,
+  Record<string, string>
+> = {
+  "big-five": {
+    openness: "Openness",
+    agreeableness: "Agreeable.",
+    conscientiousness: "Conscientious.",
+  },
+  "bis-bas": {
+    reward_response: "BAS (Rwrd.)",
+    fun_seeking: "BAS (Fun)",
+  },
+  "barchard-ei": {
+    empathic_concern: "Empathic Crn.",
+    negative_expressivity: "Neg. Express.",
+    responsive_distress: "Resp. Dist.",
+    attending_to_emotions: "Attend. Em.",
+    emotion_based_decision_making: "Emot.-Based Decis.",
+  },
+  "trait-ei": {
+    self_control: "Self-Contrl.",
+  },
+};
+
+const MOBILE_CHART_MEDIA_QUERY = "(max-width: 640px)";
+
+function useIsMobileChart() {
+  const [isMobileChart, setIsMobileChart] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia(MOBILE_CHART_MEDIA_QUERY).matches,
+  );
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(MOBILE_CHART_MEDIA_QUERY);
+
+    function updateIsMobileChart(event: MediaQueryListEvent) {
+      setIsMobileChart(event.matches);
+    }
+
+    mediaQueryList.addEventListener("change", updateIsMobileChart);
+
+    return () => {
+      mediaQueryList.removeEventListener("change", updateIsMobileChart);
+    };
+  }, []);
+
+  return isMobileChart;
+}
+
+function getRadarChartLabel(
+  instrumentSlug: string,
+  scoreId: string,
+  scoreName: string,
+  useMobileLabel: boolean,
+) {
+  if (!useMobileLabel) {
+    return scoreName;
+  }
+
+  return (
+    MOBILE_RADAR_LABELS_BY_INSTRUMENT[instrumentSlug]?.[scoreId] ?? scoreName
+  );
+}
+
+function formatAttemptTimestamp(attempt: QuizState): string {
+  const timestamp = new Date(
+    attempt.dateFinished ?? attempt.dateStarted,
+  ).getTime();
+
+  if (Number.isNaN(timestamp)) {
+    return "an unknown date";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(timestamp);
+}
+
 export default function ResultsPage() {
-  const { slug } = useParams();
+  const { slug, attemptId } = useParams();
   const location = useLocation();
-  const { quizState } = (location.state as ResultsLocationState) ?? {};
+  const { quizState: locationQuizState } =
+    (location.state as ResultsLocationState) ?? {};
+  const storedQuizState = attemptId ? loadCompletedQuizState(attemptId) : null;
+  const quizState = locationQuizState ?? storedQuizState ?? undefined;
 
   if (!slug) {
     return <Navigate to="/" replace />;
@@ -89,6 +178,7 @@ function RadarResultsTooltip({ active, payload }: RadarTooltipProps) {
 
 function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
   const instrument = getInstrument(slug)!;
+  const isMobileChart = useIsMobileChart();
   const [loadState, setLoadState] = useState<{
     instrumentData: GeneratedInstrumentData | null;
     loadError: boolean;
@@ -163,6 +253,14 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
   const scaleResults = scoreScales(quizState, instrumentData);
   const subscaleResults = scoreSubscales(quizState, instrumentData);
   const tableRows = buildResultsTableRows(scaleResults, subscaleResults);
+  const describedScoresByKey = new Map(
+    buildScoreDescriptionSections(instrumentData)
+      .flatMap((section) => [
+        ...(section.scale ? [section.scale] : []),
+        ...section.subscales,
+      ])
+      .map((score) => [`${score.scoreLevel}:${score.scoreId}`, score]),
+  );
   const groupedSubscaleSections = [
     ...scaleResults
       .map((scaleResult) => ({
@@ -181,7 +279,12 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
     },
   ].filter((section) => section.subscales.length > 0);
   const radarChartData = scaleResults.map((scaleResult) => ({
-    label: scaleResult.scoreName,
+    label: getRadarChartLabel(
+      slug,
+      scaleResult.scoreId,
+      scaleResult.scoreName,
+      isMobileChart,
+    ),
     fullName: scaleResult.scoreName,
     rawScore: scaleResult.rawScore,
     theoreticalMax: scaleResult.theoreticalMax,
@@ -195,13 +298,24 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
           <span className="label">{labelText}</span>
           <h1>{instrument.name} </h1>
           <p>
-            Your results from the quiz have been calculated. You spent{" "}
-            {testDurationFormatted(
-              quizState.dateStarted,
-              quizState.dateFinished || quizState.dateStarted,
-            )}{" "}
-            taking the quiz.
+            Thank you for taking the quiz! Here are your results from this
+            attempt.
           </p>
+          <ul>
+            <li>
+              Date completed:{" "}
+              <strong>{formatAttemptTimestamp(quizState)}</strong>
+            </li>
+            <li>
+              Time elapsed:{" "}
+              <strong>
+                {testDurationFormatted(
+                  quizState.dateStarted,
+                  quizState.dateFinished || quizState.dateStarted,
+                )}
+              </strong>
+            </li>
+          </ul>
         </section>
 
         <section className="page-section">
@@ -215,7 +329,7 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart
                 data={radarChartData}
-                outerRadius="72%"
+                outerRadius={isMobileChart ? "58%" : "72%"}
                 margin={{ top: 24, right: 24, bottom: 24, left: 24 }}
               >
                 <PolarGrid stroke="var(--border)" />
@@ -275,6 +389,11 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
                 <p className="results-card-tertiary">
                   {scaleResult.qualitativeDescriptor}
                 </p>
+                <ScoreInfoDisclosure
+                  score={describedScoresByKey.get(
+                    `scale:${scaleResult.scoreId}`,
+                  )}
+                />
               </article>
             ))}
           </div>
@@ -312,6 +431,11 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
                       <p className="results-card-tertiary">
                         {subscaleResult.qualitativeDescriptor}
                       </p>
+                      <ScoreInfoDisclosure
+                        score={describedScoresByKey.get(
+                          `subscale:${subscaleResult.scoreId}`,
+                        )}
+                      />
                     </article>
                   ))}
                 </div>
@@ -332,23 +456,32 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
               <table className="results-table">
                 <thead>
                   <tr>
-                    <th>Scale</th>
-                    <th>Subscale</th>
+                    <th>Scale/Subscale</th>
                     <th className="results-table-numeric">Raw Score</th>
-                    <th className="results-table-numeric">T-Score</th>
-                    <th className="results-table-numeric">Percentile Rank</th>
                     <th className="results-table-numeric">
+                      T-Score
+                      <span className="results-table-header-note">
+                        (90% CI)
+                      </span>
+                    </th>
+                    <th className="results-table-numeric">Percentile Rank</th>
+                    <th className="results-table-descriptor">
                       Qualitative Descriptor
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {tableRows.map((row, index) => (
-                    <tr
-                      key={`${row.scaleName ?? "scale"}-${row.subscaleName ?? "subscale"}-${index}`}
-                    >
-                      <td>{row.scaleName ?? ""}</td>
-                      <td>{row.subscaleName ?? ""}</td>
+                    <tr key={`${row.scoreLevel}-${row.scoreName}-${index}`}>
+                      <td
+                        className={
+                          row.scoreLevel === "subscale"
+                            ? "results-table-score-name results-table-subscale-name"
+                            : "results-table-score-name"
+                        }
+                      >
+                        {row.scoreName}
+                      </td>
                       <td className="results-table-numeric">
                         {row.rawScoreDisplay}
                       </td>
@@ -365,7 +498,7 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
                       <td className="results-table-numeric">
                         {row.percentileRankDisplay}
                       </td>
-                      <td className="results-table-numeric">
+                      <td className="results-table-descriptor">
                         {row.qualitativeDescriptor}
                       </td>
                     </tr>
@@ -385,5 +518,84 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
         </section>
       </div>
     </PageLayout>
+  );
+}
+
+type ScoreInfoDisclosureProps = {
+  score: DescribedScore | undefined;
+};
+
+function ScoreInfoDisclosure({ score }: ScoreInfoDisclosureProps) {
+  const [isRendered, setIsRendered] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!score) {
+    return null;
+  }
+
+  function openDrawer() {
+    setIsRendered(true);
+    window.requestAnimationFrame(() => {
+      setIsOpen(true);
+    });
+  }
+
+  function closeDrawer() {
+    setIsOpen(false);
+  }
+
+  return (
+    <div
+      className={`results-score-info${isRendered ? " is-rendered" : ""}${
+        isOpen ? " is-open" : ""
+      }`}
+    >
+      <button
+        type="button"
+        className="results-score-info-button results-score-info-trigger"
+        aria-expanded={isOpen}
+        aria-label={`About ${score.scoreName}`}
+        onClick={openDrawer}
+      >
+        <span className="results-score-info-icon" aria-hidden="true">
+          i
+        </span>
+      </button>
+      <div
+        className="results-score-info-drawer"
+        aria-hidden={!isOpen}
+        onTransitionEnd={(event) => {
+          if (event.propertyName === "grid-template-rows" && !isOpen) {
+            setIsRendered(false);
+          }
+        }}
+      >
+        <div className="results-score-info-drawer-inner">
+          <div className="results-score-info-body">
+            <button
+              type="button"
+              className="results-score-info-button results-score-info-close"
+              aria-label={`Close ${score.scoreName} description`}
+              onClick={closeDrawer}
+            >
+              x
+            </button>
+            <p>{score.description.summary}</p>
+            {score.description.highPole ? (
+              <p>
+                <strong>Higher: </strong>
+                {score.description.highPole}
+              </p>
+            ) : null}
+            {score.description.lowPole ? (
+              <p>
+                <strong>Lower: </strong>
+                {score.description.lowPole}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

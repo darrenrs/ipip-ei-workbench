@@ -18,8 +18,8 @@ export type ScoreResult = {
 };
 
 export type ResultsTableRow = {
-  scaleName: string | null;
-  subscaleName: string | null;
+  scoreLevel: ScoreLevel;
+  scoreName: string;
   rawScoreDisplay: string;
   standardScoreDisplay: string;
   ci90Display: string;

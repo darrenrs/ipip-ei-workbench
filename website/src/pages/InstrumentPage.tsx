@@ -7,11 +7,12 @@ import {
   supportReliabilityLabelMap,
   supportFactorStructureLabelMap,
 } from "@/lib/supportLabels";
+import { getInstrument } from "@/lib/instruments";
 import {
-  getInstrument,
-  getScaleNames,
-  getSubscaleNames,
-} from "@/lib/instruments";
+  buildScoreDescriptionSections,
+  type DescribedScore,
+} from "@/lib/scoreDescriptions";
+import SavedResultsList from "@/components/SavedResultsList";
 import PageLayout from "@/pages/PageLayout";
 import type { GeneratedInstrumentData } from "@/types";
 
@@ -77,8 +78,9 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
 
   const { instrumentData, loadError } = loadState;
   const isLoading = instrumentData === null && !loadError;
-  const scaleNames = instrumentData ? getScaleNames(instrumentData) : [];
-  const subscaleNames = instrumentData ? getSubscaleNames(instrumentData) : [];
+  const scoreDescriptionSections = instrumentData
+    ? buildScoreDescriptionSections(instrumentData)
+    : [];
   const labelText = loadError
     ? `Failed to load data for ${slug}. Please refresh the page to try again.`
     : isLoading
@@ -145,32 +147,6 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
           </aside>
         </section>
 
-        {instrumentData ? (
-          <section className="page-section">
-            <h2>Scales</h2>
-            <div className="tag-row">
-              {scaleNames.map((scale) => (
-                <span key={scale} className="tag">
-                  {scale}
-                </span>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        {instrumentData && subscaleNames.length > 0 ? (
-          <section className="page-section">
-            <h2>Subscales</h2>
-            <div className="tag-row">
-              {subscaleNames.map((subscale) => (
-                <span key={subscale} className="tag">
-                  {subscale}
-                </span>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
         <section className="page-section">
           <h2>Actions</h2>
           {instrument.supportLevels.overall < 4 ? (
@@ -190,7 +166,7 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
                 to={`/instrument/${instrument.slug}/quiz`}
                 className="button-link"
               >
-                Begin Quiz
+                Take Quiz
               </Link>
             ) : null}
             <a
@@ -207,7 +183,94 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
             </a>
           </div>
         </section>
+
+        <section className="page-section">
+          <h2>Results</h2>
+          <SavedResultsList instrumentSlug={instrument.slug} />
+        </section>
+
+        {instrumentData ? (
+          <section className="page-section">
+            <h2>Scales</h2>
+            <div className="score-description-list">
+              {scoreDescriptionSections.map((section) => (
+                <article
+                  key={section.scale?.scoreId ?? "orphan-subscales"}
+                  className="score-description-card"
+                >
+                  {section.scale ? (
+                    <ScoreDescriptionBlock score={section.scale} />
+                  ) : (
+                    <div className="score-description-main">
+                      <h3>Other Subscales</h3>
+                      <p className="muted">
+                        These subscales are not attached to a specific parent
+                        scale in the instrument data.
+                      </p>
+                    </div>
+                  )}
+
+                  {section.subscales.length > 0 ? (
+                    <div className="subscale-description-panel">
+                      <h4>Subscales</h4>
+                      <div className="subscale-description-list">
+                        {section.subscales.map((subscale) => (
+                          <ScoreDescriptionBlock
+                            key={subscale.scoreId}
+                            score={subscale}
+                            isCompact
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
     </PageLayout>
+  );
+}
+
+type ScoreDescriptionBlockProps = {
+  score: DescribedScore;
+  isCompact?: boolean;
+};
+
+function ScoreDescriptionBlock({
+  score,
+  isCompact = false,
+}: ScoreDescriptionBlockProps) {
+  return (
+    <div
+      className={
+        isCompact
+          ? "score-description-main score-description-main-compact"
+          : "score-description-main"
+      }
+    >
+      <div className="score-description-heading-row">
+        <h3>{score.scoreName}</h3>
+      </div>
+      <p>{score.description.summary}</p>
+      {score.description.highPole || score.description.lowPole ? (
+        <div className="score-pole-list">
+          {score.description.highPole ? (
+            <p>
+              <strong>Higher: </strong>
+              {score.description.highPole}
+            </p>
+          ) : null}
+          {score.description.lowPole ? (
+            <p>
+              <strong>Lower: </strong>
+              {score.description.lowPole}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
 }

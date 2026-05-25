@@ -5,7 +5,7 @@ const aboutItems = [
   "Scoring, reliability, and confidence intervals are automatically computed from the Eugene-Springfield Community Sample unless otherwise noted.",
   "The interactive portion of this website omits most technical information for maximum accessibility. Interested users or researchers may consult the full Quarto report.",
   "Some exploratory factor solutions that differ from the intended factor structure are found in the report, but this website does not use them at this time.",
-  "Results are not currently sent or stored anywhere. In the future, the ability to save results to the browser may be added.",
+  "Quiz responses and results are not sent server-side. In-progress quizzes are stored in session storage, and completed results are stored locally in the browser.",
   "This website and associated pipeline code is 100% open-source and is currently under the provisions of the MIT license.",
 ];
 

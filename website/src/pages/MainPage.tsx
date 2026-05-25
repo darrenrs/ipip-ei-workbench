@@ -3,6 +3,7 @@ import { withBaseUrl } from "@/lib/baseUrl";
 import { instruments } from "@/lib/data/instrumentMetadata";
 import { supportOverallLabelMap } from "@/lib/supportLabels";
 import { renderInstrumentVisual } from "@/components/InstrumentVisuals";
+import SavedResultsList from "@/components/SavedResultsList";
 import PageLayout from "@/pages/PageLayout";
 
 export default function MainPage() {
@@ -10,8 +11,17 @@ export default function MainPage() {
     <PageLayout>
       <div className="page-stack">
         <section className="hero hero-split hero-split-main-page">
-          <div className="stack">
-            <h1>IPIP Workbench</h1>
+          <div className="stack hero-main-copy">
+            <div className="hero-main-title-row">
+              <h1>IPIP Workbench</h1>
+              <div className="hero-image-frame hero-image-frame-mobile">
+                <img
+                  src={withBaseUrl("home-page.png")}
+                  alt="Image of a brain representing cognition and psychometrics"
+                  className="hero-image"
+                />
+              </div>
+            </div>
             <p>
               A selection of five instruments touching personality and emotional
               intelligence derived from public-domain questions and samples from
@@ -31,7 +41,7 @@ export default function MainPage() {
               </a>
             </div>
           </div>
-          <div className="hero-image-frame">
+          <div className="hero-image-frame hero-image-frame-desktop">
             <img
               src={withBaseUrl("home-page.png")}
               alt="Image of a brain representing cognition and psychometrics"
@@ -68,6 +78,11 @@ export default function MainPage() {
               </Link>
             ))}
           </div>
+        </section>
+
+        <section className="page-section">
+          <h2>Results</h2>
+          <SavedResultsList />
         </section>
       </div>
     </PageLayout>
