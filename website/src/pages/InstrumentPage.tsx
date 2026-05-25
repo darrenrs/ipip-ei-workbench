@@ -204,8 +204,8 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
                     <div className="score-description-main">
                       <h3>Other Subscales</h3>
                       <p className="muted">
-                        These subscales are not attached to a specific parent
-                        scale in the instrument data.
+                        These subscales are not associated with a specific
+                        parent scale.
                       </p>
                     </div>
                   )}
@@ -259,13 +259,13 @@ function ScoreDescriptionBlock({
         <div className="score-pole-list">
           {score.description.highPole ? (
             <p>
-              <strong>Higher: </strong>
+              <strong>Higher Scores: </strong>
               {score.description.highPole}
             </p>
           ) : null}
           {score.description.lowPole ? (
             <p>
-              <strong>Lower: </strong>
+              <strong>Lower Scores: </strong>
               {score.description.lowPole}
             </p>
           ) : null}

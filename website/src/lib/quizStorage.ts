@@ -76,7 +76,7 @@ export function loadActiveQuizState(instrumentSlug: string): QuizState | null {
 
   try {
     quizState = readStoredQuizState(
-      window.sessionStorage.getItem(getActiveQuizKey(instrumentSlug)),
+      window.localStorage.getItem(getActiveQuizKey(instrumentSlug)),
     );
   } catch {
     return null;
@@ -98,7 +98,7 @@ export function saveActiveQuizState(quizState: QuizState): void {
   }
 
   try {
-    window.sessionStorage.setItem(
+    window.localStorage.setItem(
       getActiveQuizKey(quizState.instrumentSlug),
       JSON.stringify(quizState),
     );
@@ -113,7 +113,7 @@ export function clearActiveQuizState(instrumentSlug: string): void {
   }
 
   try {
-    window.sessionStorage.removeItem(getActiveQuizKey(instrumentSlug));
+    window.localStorage.removeItem(getActiveQuizKey(instrumentSlug));
   } catch {
     // Ignore blocked storage.
   }
@@ -154,9 +154,7 @@ export function loadCompletedQuizStates(): QuizState[] {
   }
 }
 
-export function loadCompletedQuizState(
-  attemptId: string,
-): QuizState | null {
+export function loadCompletedQuizState(attemptId: string): QuizState | null {
   return (
     loadCompletedQuizStates().find(
       (quizState) => quizState.attemptId === attemptId,

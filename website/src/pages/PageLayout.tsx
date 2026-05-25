@@ -18,7 +18,6 @@ export default function PageLayout({ children }: PageLayoutProps) {
           </NavLink>
           <div>
             <NavLink to="/about">About</NavLink>
-            <NavLink to="/privacy">Privacy</NavLink>
             <a href="https://github.com/darrenrs/ipip-workbench">GitHub</a>
           </div>
         </nav>
@@ -28,7 +27,13 @@ export default function PageLayout({ children }: PageLayoutProps) {
 
       <footer className="container">
         <p>
-          &copy; 2026 Darren R. Skidmore.
+          <a href="https://darrenskidmore.com">
+            &copy; 2026 Darren R. Skidmore.
+          </a>{" "}
+          &bull;{" "}
+          <a href="https://darrenskidmore.com/privacy#ipip-workbench">
+            Privacy Policy
+          </a>
           <br />
           Built as an open psychometrics and data-science portfolio project. Not
           a clinical or employment-use tool.
