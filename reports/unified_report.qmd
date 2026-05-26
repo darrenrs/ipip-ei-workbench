@@ -9,7 +9,6 @@ bibliography: unified_report.bib
 #| echo: false
 #| warning: false
 #| message: false
-
 # Load libraries
 library(readr)
 library(psych)
@@ -41,7 +40,6 @@ The sample for each measurement varied as each sample was composed of participan
 #| warning: false
 #| message: false
 #| results: asis
-
 demographics_df <- read_tsv(file.path(
   "..",
   "raw_data",
@@ -239,7 +237,6 @@ The highest scoring scale was Agreeableness with an average score of 41.45, and 
 #| echo: false
 #| warning: false
 #| message: false
-
 big5_score_descriptives <- read_csv(
   "../output/big5/big5_score_descriptives.csv",
   show_col_types = FALSE
@@ -256,7 +253,6 @@ Most scales had zero-to-low correlations to each other (range -0.18-0.37), sugge
 #| echo: false
 #| warning: false
 #| message: false
-
 big5_score_correlations <- read_csv(
   "../output/big5/big5_score_correlations.csv",
   show_col_types = FALSE
@@ -273,7 +269,6 @@ The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\ome
 #| echo: false
 #| warning: false
 #| message: false
-
 big5_score_reliabilities <- read_csv(
   "../output/big5/big5_score_reliabilities.csv",
   show_col_types = FALSE
@@ -288,7 +283,6 @@ knitr::kable(big5_score_reliabilities, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 big5_scored <- read_csv(
   "../output/big5/big5_scored.csv",
   show_col_types = FALSE
@@ -335,7 +329,6 @@ Under principal axis factoring, all items had at least one loading ≥ 0.30 and 
 #| message: false
 #| fig-width: 9
 #| fig-height: 16
-
 structure_df <- read_csv(
   "../output/big5/big5_fa_structure.csv",
   show_col_types = FALSE
@@ -441,7 +434,6 @@ ggplot(heatmap_df, aes(x = factor, y = item_label, fill = loading)) +
 #| echo: false
 #| warning: false
 #| message: false
-
 big5_fa_structure_factor_alignment <- read_csv(
   "../output/big5/big5_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -456,7 +448,6 @@ The factor intercorrelations in the Phi matrix were low, which is consistent wit
 #| echo: false
 #| warning: false
 #| message: false
-
 big5_fa_phi <- read_csv(
   "../output/big5/big5_fa_phi.csv",
   show_col_types = FALSE
@@ -475,7 +466,6 @@ A comparison to public results from an identical test hosted by OpenPsychometric
 #| echo: false
 #| warning: false
 #| message: false
-
 welch_from_summary <- function(mean_1, sd_1, n_1, mean_2, sd_2, n_2) {
   se_sq <- (sd_1^2 / n_1) + (sd_2^2 / n_2)
   t_value <- (mean_1 - mean_2) / sqrt(se_sq)
@@ -583,7 +573,6 @@ The BIS/BAS sample consisted of 461 participants who completed all items related
 #| echo: false
 #| warning: false
 #| message: false
-
 bis_bas_score_descriptives <- read_csv(
   "../output/bis-bas/bis-bas_score_descriptives.csv",
   show_col_types = FALSE
@@ -600,7 +589,6 @@ Most scales had low positive correlations to each other (range -0.12-0.36), sugg
 #| echo: false
 #| warning: false
 #| message: false
-
 bis_bas_score_correlations <- read_csv(
   "../output/bis-bas/bis-bas_score_correlations.csv",
   show_col_types = FALSE
@@ -617,7 +605,6 @@ The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\ome
 #| echo: false
 #| warning: false
 #| message: false
-
 bis_bas_score_reliabilities <- read_csv(
   "../output/bis-bas/bis-bas_score_reliabilities.csv",
   show_col_types = FALSE
@@ -632,7 +619,6 @@ knitr::kable(bis_bas_score_reliabilities, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 bis_bas_scored <- read_csv(
   "../output/bis-bas/bis-bas_scored.csv",
   show_col_types = FALSE
@@ -679,7 +665,6 @@ Under principal axis factoring, all items had at least one loading ≥ 0.30 and 
 #| message: false
 #| fig-width: 9
 #| fig-height: 16
-
 structure_df <- read_csv(
   "../output/bis-bas/bis-bas_fa_structure.csv",
   show_col_types = FALSE
@@ -785,7 +770,6 @@ ggplot(heatmap_df, aes(x = factor, y = item_label, fill = loading)) +
 #| echo: false
 #| warning: false
 #| message: false
-
 bis_bas_fa_structure_factor_alignment <- read_csv(
   "../output/bis-bas/bis-bas_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -800,7 +784,6 @@ The factor intercorrelations in the Phi matrix were low, meaning the results sup
 #| echo: false
 #| warning: false
 #| message: false
-
 bis_bas_fa_phi <- read_csv(
   "../output/bis-bas/bis-bas_fa_phi.csv",
   show_col_types = FALSE
@@ -825,7 +808,6 @@ The highest scoring scale was Responsive Joy with an average score of 39.39 (ave
 #| echo: false
 #| warning: false
 #| message: false
-
 barchard_score_descriptives <- read_csv(
   "../output/barchard/barchard_score_descriptives.csv",
   show_col_types = FALSE
@@ -842,7 +824,6 @@ The seven components had low-to-moderate positive correlations to each other (ra
 #| echo: false
 #| warning: false
 #| message: false
-
 barchard_score_correlations <- read_csv(
   "../output/barchard/barchard_score_correlations.csv",
   show_col_types = FALSE
@@ -859,7 +840,6 @@ The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\ome
 #| echo: false
 #| warning: false
 #| message: false
-
 barchard_score_reliabilities <- read_csv(
   "../output/barchard/barchard_score_reliabilities.csv",
   show_col_types = FALSE
@@ -874,7 +854,6 @@ knitr::kable(barchard_score_reliabilities, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 barchard_scored <- read_csv(
   "../output/barchard/barchard_scored.csv",
   show_col_types = FALSE
@@ -921,7 +900,6 @@ Under principal axis factoring, 64 items (94%) had at least one loading ≥ 0.30
 #| message: false
 #| fig-width: 9
 #| fig-height: 16
-
 structure_df <- read_csv(
   "../output/barchard/barchard_fa_structure.csv",
   show_col_types = FALSE
@@ -1027,7 +1005,6 @@ ggplot(heatmap_df, aes(x = factor, y = item_label, fill = loading)) +
 #| echo: false
 #| warning: false
 #| message: false
-
 barchard_fa_structure_factor_alignment <- read_csv(
   "../output/barchard/barchard_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -1042,7 +1019,6 @@ The factor intercorrelations in the Phi matrix were low, meaning there is no emp
 #| echo: false
 #| warning: false
 #| message: false
-
 barchard_fa_phi <- read_csv(
   "../output/barchard/barchard_fa_phi.csv",
   show_col_types = FALSE
@@ -1075,7 +1051,6 @@ The IPIP Values in Action sample consisted of 591 participants who completed all
 #| echo: false
 #| warning: false
 #| message: false
-
 via_score_descriptives <- read_csv(
   "../output/via/via_score_descriptives.csv",
   show_col_types = FALSE
@@ -1092,7 +1067,6 @@ The six broad scales had generally moderately positive correlations to each othe
 #| echo: false
 #| warning: false
 #| message: false
-
 via_score_correlations <- read_csv(
   "../output/via/via_score_correlations.csv",
   show_col_types = FALSE
@@ -1120,7 +1094,6 @@ The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\ome
 #| echo: false
 #| warning: false
 #| message: false
-
 via_score_reliabilities <- read_csv(
   "../output/via/via_score_reliabilities.csv",
   show_col_types = FALSE
@@ -1135,7 +1108,6 @@ knitr::kable(via_score_reliabilities, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 via_scored <- read_csv(
   "../output/via/via_scored.csv",
   show_col_types = FALSE
@@ -1157,7 +1129,6 @@ Because this instrument includes scales (virtues) and subscales (character trait
 #| echo: false
 #| warning: false
 #| message: false
-
 fa_items <- via_key$id
 via_item_to_scale_scored_fa <- via_scored[, fa_items]
 
@@ -1173,7 +1144,6 @@ A six-factor model shows very poor results. None of the factors have Justice as 
 #| echo: false
 #| warning: false
 #| message: false
-
 via_fa_structure_factor_alignment <- read_csv(
   "../output/via/via_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -1188,7 +1158,6 @@ A 24-factor model does not map cleanly to the theoretical structure. The mean do
 #| echo: false
 #| warning: false
 #| message: false
-
 via_item_to_subscale_fa_structure_factor_alignment <- read_csv(
   "../output/via/via_item_to_subscale_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -1203,7 +1172,6 @@ knitr::kable(via_item_to_subscale_fa_structure_factor_alignment, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 fa_subscales <- unique(via_key$subscale_id)
 via_subscale_to_scale_scored_fa <- via_scored[, fa_subscales]
 
@@ -1217,7 +1185,6 @@ The number of suggested factors is 5 and suggested components is 4. With a six-f
 #| echo: false
 #| warning: false
 #| message: false
-
 via_subscale_to_scale_fa_structure_factor_alignment <- read_csv(
   "../output/via/via_subscale_to_scale_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -1249,7 +1216,6 @@ The IPIP Trait Emotional Intelligence sample consisted of 591 participants who c
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_score_descriptives <- read_csv(
   "../output/traitei/traitei_score_descriptives.csv",
   show_col_types = FALSE
@@ -1266,7 +1232,6 @@ The four broad scales had generally moderately positive correlations to each oth
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_score_correlations <- read_csv(
   "../output/traitei/traitei_score_correlations.csv",
   show_col_types = FALSE
@@ -1294,7 +1259,6 @@ The reliability measures Cronbach's alpha ($\alpha$) and McDonald's omega ($\ome
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_score_reliabilities <- read_csv(
   "../output/traitei/traitei_score_reliabilities.csv",
   show_col_types = FALSE
@@ -1309,7 +1273,6 @@ knitr::kable(traitei_score_reliabilities, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_scored <- read_csv(
   "../output/traitei/traitei_scored.csv",
   show_col_types = FALSE
@@ -1331,7 +1294,6 @@ Because this instrument includes scales (factors) and subscales (facets), three 
 #| echo: false
 #| warning: false
 #| message: false
-
 fa_items <- traitei_key$id[!is.na(traitei_key$scale_id)]
 traitei_item_to_scale_scored_fa <- traitei_scored[, fa_items]
 
@@ -1347,7 +1309,6 @@ A four-factor model shows partially acceptable results. The factors Self-Control
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_fa_structure_factor_alignment <- read_csv(
   "../output/traitei/traitei_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -1356,13 +1317,12 @@ traitei_fa_structure_factor_alignment <- read_csv(
 knitr::kable(traitei_fa_structure_factor_alignment, digits = 2)
 ```
 
-A 15-factor model does not map cleanly to the theoretical structure. The mean dominant-scale purity is 0.6367, and the mean dominant-scale alignment is 0.627. Two traits no longer have a dominant factor: Emotion Regulation (which is spread out across Stress Management and Impulsiveness) and Self-Esteem (which is completely spread out across five traits.)
+A 15-factor model does not map cleanly to the theoretical structure. The mean dominant-scale purity is 0.6367, and the mean dominant-scale alignment is 0.627. Two traits no longer have a dominant factor: Emotion Regulation (which is spread out across Stress Management and Low Impulsiveness) and Self-Esteem (which is completely spread out across five traits.)
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_item_to_subscale_fa_structure_factor_alignment <- read_csv(
   "../output/traitei/traitei_item_to_subscale_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -1377,7 +1337,6 @@ knitr::kable(traitei_item_to_subscale_fa_structure_factor_alignment, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 fa_subscales <- unique(traitei_key$subscale_id)
 traitei_subscale_to_scale_scored_fa <- traitei_scored[, fa_subscales]
 
@@ -1391,7 +1350,6 @@ The number of suggested factors is 5 and suggested components is 3. With a five-
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_subscale_to_scale_fa_structure_factor_alignment <- read_csv(
   "../output/traitei/traitei_subscale_to_scale_fa_structure_factor_alignment.csv",
   show_col_types = FALSE
@@ -1450,7 +1408,6 @@ The project demonstrates both the potential and limits of open psychometric reco
 #| echo: false
 #| warning: false
 #| message: false
-
 via_score_correlations <- read_csv(
   "../output/via/via_score_correlations.csv",
   show_col_types = FALSE
@@ -1464,7 +1421,6 @@ knitr::kable(via_score_correlations, digits = 2)
 #| echo: false
 #| warning: false
 #| message: false
-
 traitei_score_correlations <- read_csv(
   "../output/traitei/traitei_score_correlations.csv",
   show_col_types = FALSE

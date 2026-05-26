@@ -24,11 +24,11 @@ v137,Can control my emotions.,Self-Control,self_control,Emotion Regulation,emoti
 e146,Am swayed by my emotions.,Self-Control,self_control,Emotion Regulation,emotion_regulation,-
 x95,Get upset easily.,Self-Control,self_control,Emotion Regulation,emotion_regulation,-
 h755,Lose my temper.,Self-Control,self_control,Emotion Regulation,emotion_regulation,-
-v100,Think before I speak.,Self-Control,self_control,Impulsiveness,impulsiveness,+
-x274,Easily resist temptations.,Self-Control,self_control,Impulsiveness,impulsiveness,+
-q253,Act impulsively when something is bothering me.,Self-Control,self_control,Impulsiveness,impulsiveness,-
-v329,Give in to my urges.,Self-Control,self_control,Impulsiveness,impulsiveness,-
-h846,Act without thinking.,Self-Control,self_control,Impulsiveness,impulsiveness,-
+v100,Think before I speak.,Self-Control,self_control,Low Impulsiveness,impulsiveness,+
+x274,Easily resist temptations.,Self-Control,self_control,Low Impulsiveness,impulsiveness,+
+q253,Act impulsively when something is bothering me.,Self-Control,self_control,Low Impulsiveness,impulsiveness,-
+v329,Give in to my urges.,Self-Control,self_control,Low Impulsiveness,impulsiveness,-
+h846,Act without thinking.,Self-Control,self_control,Low Impulsiveness,impulsiveness,-
 h362,Can stand a great deal of stress.,Self-Control,self_control,Stress Management,stress_management,+
 h391,Can work under pressure.,Self-Control,self_control,Stress Management,stress_management,+
 e64,Am calm even in tense situations.,Self-Control,self_control,Stress Management,stress_management,+

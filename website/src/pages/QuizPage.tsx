@@ -80,8 +80,8 @@ type QuizPageContentProps = {
 function QuizPageContent({ slug }: QuizPageContentProps) {
   const navigate = useNavigate();
   const instrument = getInstrument(slug)!;
-  const [quizState, setQuizState] = useState<QuizState>(() =>
-    loadActiveQuizState(slug) ?? createQuizState(slug),
+  const [quizState, setQuizState] = useState<QuizState>(
+    () => loadActiveQuizState(slug) ?? createQuizState(slug),
   );
   const [loadState, setLoadState] = useState<{
     instrumentData: GeneratedInstrumentData | null;
@@ -136,7 +136,8 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
   const answeredCount = orderedItems.filter(
     (item) => quizState.responses[item.id] !== undefined,
   ).length;
-  const progressPercent = totalItems > 0 ? (answeredCount / totalItems) * 100 : 0;
+  const progressPercent =
+    totalItems > 0 ? (answeredCount / totalItems) * 100 : 0;
   const isComplete = totalItems > 0 && answeredCount === totalItems;
   const shouldWarnBeforeUnload =
     instrumentData !== null && quizState.status === "in-progress";
@@ -174,9 +175,8 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
             <p>
               For each of the questions, please select how well the statement
               describes you. To ensure maximum accuracy, you must answer all
-              questions to see your results. In-progress answers are saved in
-              this browser session, and completed results are saved locally in
-              this browser.
+              questions to see your results. In-progress answers and completed
+              results are saved locally in this browser.
             </p>
           </section>
           <section className="page-section">
@@ -237,9 +237,8 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
           <p>
             For each of the questions, please select how well the statement
             describes you. To ensure maximum accuracy, you must answer all
-            questions to see your results. In-progress answers are saved in this
-            browser session, and completed results are saved locally in this
-            browser.
+            questions to see your results. In-progress answers and completed
+            results are saved locally in this browser.
           </p>
         </section>
         <section className="page-section">

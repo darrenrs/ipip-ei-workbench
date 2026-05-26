@@ -108,7 +108,7 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
               <strong>Length: </strong>{" "}
               {instrumentData
                 ? `${instrumentData.items.length} items (~${Math.ceil(
-                    instrumentData.items.length / 9,
+                    instrumentData.items.length / 12,
                   )}-${Math.ceil(instrumentData.items.length / 6)} min to take)`
                 : "Loading..."}
             </p>
