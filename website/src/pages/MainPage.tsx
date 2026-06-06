@@ -3,12 +3,14 @@ import { withBaseUrl } from "@/lib/baseUrl";
 import { instruments } from "@/lib/data/instrumentMetadata";
 import { supportOverallLabelMap } from "@/lib/supportLabels";
 import { renderInstrumentVisual } from "@/components/InstrumentVisuals";
+import PageTitle from "@/components/PageTitle";
 import SavedResultsList from "@/components/SavedResultsList";
 import PageLayout from "@/pages/PageLayout";
 
 export default function MainPage() {
   return (
     <PageLayout>
+      <PageTitle title="IPIP Workbench" />
       <div className="page-stack">
         <section className="hero hero-split hero-split-main-page">
           <div className="stack hero-main-copy">
@@ -24,13 +26,13 @@ export default function MainPage() {
             </div>
             <p>
               A selection of five instruments touching personality and emotional
-              intelligence derived from public-domain questions and samples from
-              the{" "}
+              intelligence derived from public-domain questions from the{" "}
               <a href="https://ipip.ori.org/">
-                International Personality Item Pool.
+                International Personality Item Pool
               </a>{" "}
-              Read more about the research by clicking "Full Report" or gain
-              more insight about yourself by taking one of the five quizzes!
+              and samples from the Eugene-Springfield Community Sample. Read
+              more about the research by clicking "Full Report" or gain more
+              insight about yourself by taking one of the five quizzes!
             </p>
             <div className="actions">
               <Link to="/about" className="button-link">

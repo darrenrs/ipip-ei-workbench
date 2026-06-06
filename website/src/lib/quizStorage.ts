@@ -2,6 +2,7 @@ import type { QuizResponseValue, QuizState } from "@/types";
 
 const ACTIVE_QUIZ_KEY_PREFIX = "ipip-workbench:active-quiz";
 const COMPLETED_QUIZZES_KEY = "ipip-workbench:completed-quizzes";
+const ACTIVE_QUIZ_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 function getActiveQuizKey(instrumentSlug: string): string {
   return `${ACTIVE_QUIZ_KEY_PREFIX}:${instrumentSlug}`;
@@ -67,6 +68,16 @@ function readStoredQuizState(storageValue: string | null): QuizState | null {
   }
 }
 
+function isActiveQuizStateStale(quizState: QuizState): boolean {
+  const dateStarted = new Date(quizState.dateStarted).getTime();
+
+  if (Number.isNaN(dateStarted)) {
+    return true;
+  }
+
+  return Date.now() - dateStarted > ACTIVE_QUIZ_MAX_AGE_MS;
+}
+
 export function loadActiveQuizState(instrumentSlug: string): QuizState | null {
   if (typeof window === "undefined") {
     return null;
@@ -86,6 +97,11 @@ export function loadActiveQuizState(instrumentSlug: string): QuizState | null {
     quizState?.instrumentSlug !== instrumentSlug ||
     quizState.status !== "in-progress"
   ) {
+    return null;
+  }
+
+  if (isActiveQuizStateStale(quizState)) {
+    clearActiveQuizState(instrumentSlug);
     return null;
   }
 

@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { loadInstrumentGeneratedData } from "@/lib/data/instrumentGeneratedData";
 import { responseOptions } from "@/lib/quizLabels";
 import { getInstrument } from "@/lib/instruments";
+import PageTitle from "@/components/PageTitle";
 import PageLayout from "@/pages/PageLayout";
 import { createQuizState } from "@/lib/quizState";
 import {
@@ -168,6 +169,7 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
   if (!instrumentData) {
     return (
       <PageLayout>
+        <PageTitle title={`${instrument.name} Quiz | IPIP Workbench`} />
         <div className="page-stack">
           <section className="hero stack">
             <span className="label">{labelText}</span>
@@ -230,6 +232,7 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
 
   return (
     <PageLayout>
+      <PageTitle title={`${instrument.name} Quiz | IPIP Workbench`} />
       <div className="page-stack">
         <section className="hero stack">
           <span className="label">{labelText}</span>
@@ -296,7 +299,12 @@ function QuizPageContent({ slug }: QuizPageContentProps) {
             </span>
             <div
               className="quiz-progress-bar"
+              role="progressbar"
               aria-label={`Answered ${answeredCount} of ${totalItems} questions`}
+              aria-valuemin={0}
+              aria-valuemax={totalItems}
+              aria-valuenow={answeredCount}
+              aria-valuetext={`${answeredCount} of ${totalItems} questions answered`}
             >
               <div
                 className="quiz-progress-bar-fill"

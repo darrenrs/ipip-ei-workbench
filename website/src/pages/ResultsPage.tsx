@@ -16,13 +16,13 @@ import {
   isQuizComplete,
   scoreScales,
   scoreSubscales,
-  testDurationFormatted,
 } from "@/lib/results";
 import {
   buildScoreDescriptionSections,
   type DescribedScore,
 } from "@/lib/scoreDescriptions";
 import { loadCompletedQuizState } from "@/lib/quizStorage";
+import PageTitle from "@/components/PageTitle";
 import PageLayout from "@/pages/PageLayout";
 import type { GeneratedInstrumentData, QuizState } from "@/types";
 
@@ -228,6 +228,7 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
   if (!instrumentData) {
     return (
       <PageLayout>
+        <PageTitle title={`${instrument.name} Results | IPIP Workbench`} />
         <div className="page-stack">
           <section className="hero stack">
             <span className="label">{labelText}</span>
@@ -293,29 +294,15 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
 
   return (
     <PageLayout>
+      <PageTitle title={`${instrument.name} Results | IPIP Workbench`} />
       <div className="page-stack">
         <section className="hero stack">
           <span className="label">{labelText}</span>
           <h1>{instrument.name} </h1>
           <p>
             Thank you for taking the quiz! Here are your results from this
-            attempt.
+            attempt on <strong>{formatAttemptTimestamp(quizState)}</strong>.
           </p>
-          <ul>
-            <li>
-              Date completed:{" "}
-              <strong>{formatAttemptTimestamp(quizState)}</strong>
-            </li>
-            <li>
-              Time elapsed:{" "}
-              <strong>
-                {testDurationFormatted(
-                  quizState.dateStarted,
-                  quizState.dateFinished || quizState.dateStarted,
-                )}
-              </strong>
-            </li>
-          </ul>
         </section>
 
         <section className="page-section">
@@ -368,8 +355,8 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
           </p>
           <p>
             These scores are relative to the Eugene-Springfield Community Sample
-            and are only valid for English-speaking persons in the United States
-            at least 18 years of age. Please take significant caution in
+            and are appropriate for English-speaking persons in the United
+            States at least 18 years of age. Please take significant caution in
             interpretation as these are NOT population norms.
           </p>
           <div className="results-card-grid">
@@ -491,7 +478,7 @@ function ResultsPageContent({ slug, quizState }: ResultsPageContentProps) {
                         row.ci90Display !== "n/a" &&
                         row.ci90Display !== "NA" ? (
                           <span className="results-table-ci90">
-                            ±{row.ci90Display}
+                            ({row.ci90Display})
                           </span>
                         ) : null}
                       </td>

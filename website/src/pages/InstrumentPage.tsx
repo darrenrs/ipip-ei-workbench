@@ -12,7 +12,9 @@ import {
   buildScoreDescriptionSections,
   type DescribedScore,
 } from "@/lib/scoreDescriptions";
+import PageTitle from "@/components/PageTitle";
 import SavedResultsList from "@/components/SavedResultsList";
+import { loadActiveQuizState } from "@/lib/quizStorage";
 import PageLayout from "@/pages/PageLayout";
 import type { GeneratedInstrumentData } from "@/types";
 
@@ -77,6 +79,7 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
   }, [slug]);
 
   const { instrumentData, loadError } = loadState;
+  const activeQuizState = loadActiveQuizState(instrument.slug);
   const isLoading = instrumentData === null && !loadError;
   const scoreDescriptionSections = instrumentData
     ? buildScoreDescriptionSections(instrumentData)
@@ -89,6 +92,7 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
 
   return (
     <PageLayout>
+      <PageTitle title={`${instrument.name} | IPIP Workbench`} />
       <div className="page-stack">
         <section className="hero hero-split">
           <div className="stack">
@@ -166,7 +170,7 @@ function InstrumentPageContent({ slug }: InstrumentPageContentProps) {
                 to={`/instrument/${instrument.slug}/quiz`}
                 className="button-link"
               >
-                Take Quiz
+                {activeQuizState ? "Resume Quiz" : "Take Quiz"}
               </Link>
             ) : null}
             <a

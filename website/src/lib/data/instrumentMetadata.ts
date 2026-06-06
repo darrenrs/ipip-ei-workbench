@@ -24,7 +24,7 @@ export const instruments: Instrument[] = [
     slug: "bis-bas",
     name: "Behavioral Inhibition/Activation Systems",
     shortName: "BIS/BAS",
-    modelAuthor: "Gray, Jeffery Alan",
+    modelAuthor: "Gray, Jeffrey Alan",
     summary:
       "Brain-based systems that govern a person's interactions with their environment.",
     description:

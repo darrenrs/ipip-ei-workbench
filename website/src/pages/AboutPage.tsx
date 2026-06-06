@@ -1,3 +1,4 @@
+import PageTitle from "@/components/PageTitle";
 import PageLayout from "@/pages/PageLayout";
 
 const aboutItems = [
@@ -20,6 +21,7 @@ const limitationItems = [
 export default function AboutPage() {
   return (
     <PageLayout>
+      <PageTitle title="About | IPIP Workbench" />
       <div className="page-stack">
         <section className="hero stack">
           <h1>About</h1>

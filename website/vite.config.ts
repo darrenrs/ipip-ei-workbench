@@ -8,6 +8,29 @@ export default defineConfig(({ mode }) => {
   return {
     base: env.VITE_BASE_PATH || "/",
     plugins: [react()],
+    build: {
+      rollupOptions: {
+        input: {
+          main: fileURLToPath(new URL("./index.html", import.meta.url)),
+          about: fileURLToPath(new URL("./about/index.html", import.meta.url)),
+          bigFive: fileURLToPath(
+            new URL("./instrument/big-five/index.html", import.meta.url),
+          ),
+          bisBas: fileURLToPath(
+            new URL("./instrument/bis-bas/index.html", import.meta.url),
+          ),
+          barchardEi: fileURLToPath(
+            new URL("./instrument/barchard-ei/index.html", import.meta.url),
+          ),
+          viaIs: fileURLToPath(
+            new URL("./instrument/via-is/index.html", import.meta.url),
+          ),
+          traitEi: fileURLToPath(
+            new URL("./instrument/trait-ei/index.html", import.meta.url),
+          ),
+        },
+      },
+    },
     server: {
       host: "0.0.0.0", // allows LAN access
     },

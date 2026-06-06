@@ -57,6 +57,10 @@ a {
   text-decoration: none;
 }
 
+main p a {
+  text-decoration: underline;
+}
+
 a:hover {
   color: var(--accent);
 }
